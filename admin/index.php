@@ -32,7 +32,7 @@
     <br><br>
     <h2> Contratos</h2>
 
-    <form action="index.php" method="POST">
+    <form action="<?php echo BASE_URL;?>index.php" method="POST">
         <div class="row">
 
             <div class="col">

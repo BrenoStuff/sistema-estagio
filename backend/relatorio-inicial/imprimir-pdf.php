@@ -1,6 +1,8 @@
 <?php
-
-include_once('../helpers/db-connect.php');
+include_once '../../config.php';
+include_once '../auth/verifica.php';
+include_once '../helpers/db-connect.php';
+include_once '../helpers/format.php';
 
 $contrato_id = $_GET['cntr_id'];
 
@@ -64,10 +66,10 @@ $curso = $relatorio['curs_nome'];
         <p><?php echo $relatorio['rini_comentarios']; ?></p>
     <?php } ?>
     <?php if ($relatorio['rini_anexo_1'] != '') { ?>
-        <p><a href="../uploads/<?php echo $relatorio['rini_anexo_1']; ?>" target="_blank">Anexo 1</a></p>
+        <p><a href="<?php echo BASE_URL . $relatorio['rini_anexo_1']; ?>" target="_blank">Anexo 1</a></p>
     <?php } ?>
     <?php if ($relatorio['rini_anexo_2'] != '') { ?>
-        <p><a href="../uploads/<?php echo $relatorio['rini_anexo_2']; ?>" target="_blank">Anexo 2</a></p>
+        <p><a href="<?php echo BASE_URL . $relatorio['rini_anexo_2']; ?>" target="_blank">Anexo 2</a></p>
     <?php } ?>
     <?php if ($relatorio['rini_aprovado'] == 1) { ?>
         <p>Status: Aprovado</p>

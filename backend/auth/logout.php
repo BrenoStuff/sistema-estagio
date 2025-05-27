@@ -1,8 +1,9 @@
 <?php
+require '../../config.php';
 
 session_start();
 session_destroy();
 
-header("location:../../login.php?aviso=Você saiu com sucesso!");
+header("location:" . BASE_URL . "login.php?aviso=Você foi desconectado com sucesso.");
 
 ?>

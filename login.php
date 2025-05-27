@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/style.css">
-</head>
+<?php require 'config.php'; ?>
+<?php require 'components/head.php'; ?>
+
 <body class="container py-5">
     <h1> Bem vindo </h1>
 
     <!-- form com boostrap usando floating label -->
-    <form action="backend/auth/login.php" method="POST">
+    <form action="<?php echo BASE_URL;?>backend/auth/login.php" method="POST">
         <div class="form-floating mb-3">
             <input type="text" class="form-control" id="login" name="login" placeholder="Login">
             <label for="login">Login</label>
@@ -31,8 +25,9 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php } ?>
-
-    <script src="js/bootstrap.js"></script>
-    <script src="js/script.js"></script>
+    
+    <p class="d-none d-md-block" style="margin-top: 40vh;"></p>
+    <p class="d-md-none" style="margin-top: 35vh;"></p>
+    <?php require 'components/footer.php'; ?>
 </body>
 </html>

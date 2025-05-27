@@ -18,11 +18,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo BASE_URL; ?>backend/auth/logout.php">Logout</a>
                 </li>
-                
 
-                
-                
-
+                <!-- Botão troca de thema -->
+                <button type="button" class="btn btn-outline-secondary" id="theme-toggler"></button>
             </ul>
         </div>
 

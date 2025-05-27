@@ -6,5 +6,5 @@
     <title><?php echo $title; ?></title>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/bootstrap.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/style.css">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>css/fontawesome/css/all.css">
 </head>
