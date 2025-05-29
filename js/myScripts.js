@@ -102,3 +102,28 @@ document.getElementById('add-atividade-final').addEventListener('click', functio
     `;
     container.appendChild(newRow);
 });
+
+document.getElementById('add-atividade-final-edit').addEventListener('click', function() {
+    var container = document.getElementById('atividades-container-final-edit');
+    var index = container.children.length + 1;
+
+    if (index > 10) {
+        alert('Você só pode adicionar até 10 atividades.');
+        return;
+    }
+
+    var newRow = document.createElement('div');
+    newRow.className = 'row mb-2';
+    newRow.innerHTML = `
+        <div class="col-4">
+            <textarea class="form-control" name="atividade${index}_final_edit" placeholder="Atividade ${index}" rows="3" maxlength="1023"></textarea>
+        </div>
+        <div class="col-4">
+            <textarea class="form-control" name="resumo${index}_final_edit" placeholder="Resumo da Atividade ${index}" rows="3" maxlength="1023"></textarea>
+        </div>
+        <div class="col-4">
+            <textarea class="form-control" name="disciplina${index}_final_edit" placeholder="Disciplina Relacionada ${index}" rows="3" maxlength="1023"></textarea>
+        </div>
+    `;
+    container.appendChild(newRow);
+});

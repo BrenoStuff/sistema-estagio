@@ -122,37 +122,41 @@ require 'components/head.php';
     <!-- Secão de contratos -->
     <section class="container-fluid mt-4">
         <div class="p-5 mx-2 bg-white rounded-4">
-            <h1 class="text-center mb-4">Contrato Ativo</h1>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <p class="fs-1">Contratos Ativos</p>
+                </div>
+            </div>
             <?php if ($contratoAtivo == null): ?>
                 <div class="alert alert-warning" role="alert">
                     Você não possui nenhum contrato ativo. Por favor, entre em contato com a coordenação do curso se isso é um erro.
                 </div>
             <?php else: ?>
-                
-                <?php
-                // Cálculo do percentual de dias restantes
-                    $dataInicio = new DateTime($contratoAtivo['cntr_data_inicio']);
-                    $dataFim = new DateTime($contratoAtivo['cntr_data_fim']);
-                    $dataAtual = new DateTime();
-                    $intervalo = $dataInicio->diff($dataFim);
-                    $diasTotais = $intervalo->days;
-                    $diasRestantes = $dataAtual->diff($dataFim)->days;
-                    $percentual = ($diasTotais - $diasRestantes) / $diasTotais * 100;
-                ?>
-
-                <!-- Barra de progresso do contrato -->
-                <div class="progress mb-4">
-                    <div class="progress-bar" role="progressbar" style="width: <?php echo $percentual; ?>%;" aria-valuenow="<?php echo $percentual; ?>" aria-valuemin="0" aria-valuemax="100">
-                        <?php echo round($percentual, 2); ?>%
-                    </div>
-                </div>
-
                 <div class="row">
                     <div class="col-md-4 d-flex justify-content-center align-items-center">
                         <!-- Icone de uma suitcase -->
                         <i class="fa-solid fa-suitcase fa-10x"></i>
                     </div>
                     <div class="col-md-8">
+
+                        <?php
+                            // Cálculo do percentual de dias restantes
+                            $dataInicio = new DateTime($contratoAtivo['cntr_data_inicio']);
+                            $dataFim = new DateTime($contratoAtivo['cntr_data_fim']);
+                            $dataAtual = new DateTime();
+                            $intervalo = $dataInicio->diff($dataFim);
+                            $diasTotais = $intervalo->days;
+                            $diasRestantes = $dataAtual->diff($dataFim)->days;
+                            $percentual = ($diasTotais - $diasRestantes) / $diasTotais * 100;
+                        ?>
+
+                        <div class="progress mb-4">
+                            <div class="progress-bar" role="progressbar" style="width: <?php echo $percentual; ?>%;" aria-valuenow="<?php echo $percentual; ?>" aria-valuemin="0" aria-valuemax="100">
+                                <?php echo round($percentual, 2); ?>%
+                            </div>
+                        </div>
+
                         <div class="row">
                             <!-- Informações da emrpesa -->
                             <div class="col-md-6">
@@ -305,10 +309,10 @@ require 'components/head.php';
                                                     <?php if ($relatorioFinal['rfin_assinatura'] == ''): ?>
                                                         <span class="badge bg-warning text-dark">Aguardando Assinatura</span>
                                                         <?php $controleRelatorioFinal = 1; // Setar controle para 1 - Aguardando Assinatura ?>
-                                                    <?php elseif ($relatorioFinal['rfin_assinatura'] != '' && $relatorioFinal['rfin_status'] == 0): ?>
+                                                    <?php elseif ($relatorioFinal['rfin_assinatura'] != '' && $relatorioFinal['rfin_aprovado'] == 0): ?>
                                                         <span class="badge bg-warning text-dark">Aguardando Validação</span>
                                                         <?php $controleRelatorioFinal = 2; // Setar controle para 2 - Aguardando Validação ?>
-                                                    <?php elseif ($relatorioFinal['rfin_assinatura'] != '' && $relatorioFinal['rfin_status'] == 1): ?>
+                                                    <?php elseif ($relatorioFinal['rfin_assinatura'] != '' && $relatorioFinal['rfin_aprovado'] == 1): ?>
                                                         <span class="badge bg-success">Aprovado</span>
                                                         <?php $controleRelatorioFinal = 3; // Setar controle para 3 - Aprovado ?>
                                                     <?php endif; ?>
@@ -333,24 +337,72 @@ require 'components/head.php';
                                                     <p>Relatório final enviado, mas ainda não assinado. Por favor, faça o download do relatório final, assine e envie em PDF.</p>
 
                                                     <a href="backend/relatorio-final/imprimir-pdf.php?cntr_id=<?php echo $contratoAtivo['cntr_id']; ?>" class="btn btn-secondary mb-2">Baixar PDF</a>
-                                                    <a href="backend/relatorio-final/delete.php?cntr_id=<?php echo $contratoAtivo['cntr_id']; ?>" class="btn btn-danger mb-2">Refazer Relatório Final</a>
+                                                    <button class="btn btn-secondary mb-2" data-bs-toggle="modal" data-bs-target="#modalEditarRelatorioFinal">Editar relatório</button>
+                                                    <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#modalRefazerRelatorioFinal">Cancelar relatório</button>
+
+                                                    <!-- Modal certeza que deseja refazer o relatório final -->
+                                                    <div class="modal fade" id="modalRefazerRelatorioFinal" tabindex="-1" aria-labelledby="modalRefazerRelatorioFinalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="modalRefazerRelatorioFinalLabel">Cancelar Relatório Final</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Você tem certeza que deseja cancelar o relatório final? Isso irá apagar o relatório atual e você precisará preencher um novo relatório final.
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                                                                    <form action="<?php echo BASE_URL;?>backend/relatorio-final/delete.php" method="POST">
+                                                                        <input type="hidden" name="cntr_id" value="<?php echo $contratoAtivo['cntr_id']; ?>">
+                                                                        <input type="hidden" name="rfin_id" value="<?php echo $relatorioFinal['rfin_id']; ?>">
+                                                                        <button type="submit" class="btn btn-danger">Cancelar relatório</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
                                                     <form action="<?php echo BASE_URL;?>backend/relatorio-final/enviar-pdf.php" method="POST" enctype="multipart/form-data">
                                                         <div class="mb-3">
                                                             <label for="relatorio_final" class="form-label">Anexe e envie o relatório assinado.</label>
                                                             <input type="file" class="form-control" id="relatorio_final" name="relatorio_final" required>
-                                                            <button type="submit" class="btn btn-primary mt-2">Enviar</button>
                                                         </div>
                                                         <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
                                                         <input type="hidden" name="cntr_id" value="<?php echo $contratoAtivo['cntr_id']; ?>">
+                                                        <input type="hidden" name="rfin_id" value="<?php echo $relatorioFinal['rfin_id']; ?>">
+                                                        <button type="submit" class="btn btn-primary">Enviar</button>
                                                     </form>
                                                 <?php elseif ($controleRelatorioFinal == 2): ?>
                                                     <p>Relatório final enviado e assinado, mas ainda não validado. Por favor, aguarde a validação do relatório final.</p>
-                                                    <a href="backend/relatorio-final/imprimir-pdf.php?cntr_id=<?php echo $contratoAtivo['cntr_id']; ?>" class="btn btn-secondary mb-2">Baixar PDF</a>
-                                                    <a href="backend/relatorio-final/delete.php?cntr_id=<?php echo $contratoAtivo['cntr_id']; ?>" class="btn btn-danger mb-2">Cancelar envio</a>
+                                                    <a href="<?php echo BASE_URL . $relatorioFinal['rfin_assinatura']; ?>" target="_blank" class="btn btn-secondary mb-2">Baixar PDF</a>
+                                                    <button class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#modalCancelarEnvioRelatorioFinal">Cancelar Envio</button>
+
+                                                    <!-- Modal certeza que deseja cancelar o envio do relatório final -->
+                                                    <div class="modal fade" id="modalCancelarEnvioRelatorioFinal" tabindex="-1" aria-labelledby="modalCancelarEnvioRelatorioFinalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="modalCancelarEnvioRelatorioFinalLabel">Cancelar Envio do Relatório Final</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Você tem certeza que deseja cancelar o envio do relatório final? Isso irá apagar o PDF atual e você precisará enviar um novo relatório final assinado.
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                                                                    <form action="<?php echo BASE_URL; ?>backend/relatorio-final/excluir-pdf.php" method="POST">
+                                                                        <input type="hidden" name="rfin_id" value="<?php echo $relatorioFinal['rfin_id']; ?>">
+                                                                        <button type="submit" class="btn btn-danger">Cancelar Envio</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                 <?php elseif ($controleRelatorioFinal == 3): ?>
                                                     <p>Relatório final enviado, assinado e validado. Parabéns!</p>
-                                                    <a href="backend/relatorio-final/imprimir-pdf.php?cntr_id=<?php echo $contratoAtivo['cntr_id']; ?>" class="btn btn-secondary mb-2">Baixar PDF</a>
+                                                    <a href="<?php echo BASE_URL . $relatorioFinal['rfin_assinatura']; ?>" target="_blank" class="btn btn-secondary mb-2">Baixar PDF</a>
                                                 <?php endif; ?>
 
                                                 <?php endif; // Endif da verificação do relatório inicial para exibir o relatório final ?>
@@ -588,7 +640,19 @@ require 'components/head.php';
                             <button type="button" class="btn btn-secondary" id="add-atividade-final">Adicionar Atividade</button>
                         </div>
 
+                        <!-- campo anexo de arquivo 1 e arquivo 2: Se desejável, anexe outros documentos relativos às atividades de estágio ou críticas e sugestões sobre este formulário. -->
+                        <p class="form-text">Se desejável, anexe outros documentos relativos às atividades de estágio ou críticas e sugestões sobre este formulário.</p>
+                        <div class="mb-3">
+                            <label for="rfin_anexo_1" class="form-label">Anexo 1</label>
+                            <input type="file" class="form-control" id="rfin_anexo_1" name="rfin_anexo_1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="rfin_anexo_2" class="form-label">Anexo 2</label>
+                            <input type="file" class="form-control" id="rfin_anexo_2" name="rfin_anexo_2">
+                        </div>
+
                         <input type="hidden" name="cntr_id" value="<?php echo $contratoAtivo['cntr_id']; ?>">
+                        
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                             <button type="submit" class="btn btn-primary">Enviar</button>

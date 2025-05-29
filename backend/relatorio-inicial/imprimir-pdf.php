@@ -34,17 +34,10 @@ $aluno = $relatorio['user_nome'];
 $empresa = $relatorio['empr_nome'];
 $curso = $relatorio['curs_nome'];
 
+
+require_once '../../components/head.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../../css/bootstrap.css">
-    <link rel="stylesheet" href="../../css/style.css">
-</head>
 <body>
     <h1>Relatório Inicial</h1>
     <h2>Aluno: <?php echo $aluno; ?></h2>

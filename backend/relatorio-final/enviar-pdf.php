@@ -5,18 +5,17 @@ include_once '../helpers/save-file.php';
 include_once '../helpers/format.php';
 
 // Dados recebidos
-$rini_id = $_POST['rini_id'];
+$rfin_id = $_POST['rfin_id'];
 $user_id = $_POST['user_id'];
 $cntr_id = $_POST['cntr_id'];
 
-$file = $_FILES['relatorio_inicial'];
+$file = $_FILES['relatorio_final'];
 
 // Diretórios de upload
-$upload_dir = __DIR__ . '/../uploads/relatorio-inicial/'; // Caminho absoluto
-$relative_dir = 'backend/uploads/relatorio-inicial/'; // Caminho relativo para o banco de dados
+$upload_dir = __DIR__ . '/../uploads/relatorio-final/'; // Caminho absoluto
+$relative_dir = 'backend/uploads/relatorio-final/'; // Caminho relativo para o banco de dados
 
-
-$nome_base = 'relatorio_assinado_' . $rini_id . '_' . $user_id;
+$nome_base = 'relatorio_assinado_' . $rfin_id . '_' . $user_id;
 $resultado = uploadPDF($file, $upload_dir, $nome_base);
 
 if (!$resultado['success']) {
@@ -28,9 +27,9 @@ if (!$resultado['success']) {
 $caminho_relativo = $relative_dir . $resultado['file_name'];
 
 // Atualiza no banco
-$sql = "UPDATE relatorio_inicial
-        SET rini_assinatura = '$caminho_relativo'
-        WHERE rini_id = $rini_id";
+$sql = "UPDATE relatorio_final
+        SET rfin_assinatura = '$caminho_relativo'
+        WHERE rfin_id = $rfin_id";
 
 if ($conexao->query($sql) === TRUE) {
     header("Location:" . BASE_URL . "index.php?aviso=Relatório enviado com sucesso.");
@@ -39,4 +38,6 @@ if ($conexao->query($sql) === TRUE) {
     header("Location:" . BASE_URL . "error.php?aviso=Erro ao enviar o relatório.");
     exit();
 }
+
+
 ?>
