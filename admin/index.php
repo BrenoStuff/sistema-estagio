@@ -177,6 +177,8 @@ $contratos_finalizados = $conexao->query($sql);
 
             <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addAlunoModal">Adicionar Aluno</button>
 
+            <button class="btn btn-secondary" id="secreto" onclick="window.location.href='quebra.php'">Secreto</button>
+
             <!-- Modal para adicionar contrato -->
             <div class="modal fade" id="addContratoModal" tabindex="-1" aria-labelledby="addContratoModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
