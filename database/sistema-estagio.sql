@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 16, 2025 at 02:45 AM
+-- Generation Time: May 30, 2025 at 05:18 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,19 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admins`
---
-
-CREATE TABLE `admins` (
-  `admin_id` int(11) NOT NULL,
-  `admin_login` varchar(255) NOT NULL,
-  `admin_senha` varchar(255) NOT NULL,
-  `admin_nome` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `atv_estagio_fin`
 --
 
@@ -47,6 +34,13 @@ CREATE TABLE `atv_estagio_fin` (
   `atvf_disciplina_relacionada` varchar(1023) NOT NULL,
   `atvf_id_relatorio_fin` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `atv_estagio_fin`
+--
+
+INSERT INTO `atv_estagio_fin` (`atvf_id`, `atvf_atividade`, `atvf_resumo`, `atvf_disciplina_relacionada`, `atvf_id_relatorio_fin`) VALUES
+(17, 'sad', 's', 'ad', 13);
 
 -- --------------------------------------------------------
 
@@ -60,6 +54,13 @@ CREATE TABLE `atv_estagio_ini` (
   `atvi_comentario` varchar(1023) DEFAULT NULL,
   `atvi_id_relatorio_ini` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `atv_estagio_ini`
+--
+
+INSERT INTO `atv_estagio_ini` (`atvi_id`, `atvi_atividade`, `atvi_comentario`, `atvi_id_relatorio_ini`) VALUES
+(68, 'atv 1', 'comentário foda', 20);
 
 -- --------------------------------------------------------
 
@@ -99,7 +100,8 @@ CREATE TABLE `contratos` (
 --
 
 INSERT INTO `contratos` (`cntr_id`, `cntr_data_inicio`, `cntr_data_fim`, `cntr_escala_horario`, `cntr_termo_contrato`, `cntr_anexo_extra`, `cntr_remunerado`, `cntr_ativo`, `cntr_id_relatorio_inicial`, `cntr_id_relatorio_final`, `cntr_id_empresa`, `cntr_id_usuario`) VALUES
-(1, '2025-03-01', '2025-07-18', '12h às 18h', 'link contrato', 'link anexo', 1, 1, NULL, NULL, 1, 1);
+(1, '2025-03-01', '2025-07-18', '12h às 18h', 'link contrato', 'link anexo', 1, 1, 20, 13, 1, 1),
+(2, '2025-05-19', '2025-10-30', '12h às 18h', 'backend/uploads/contratos/contrato_termo_4_1748574857_6018.pdf', NULL, 1, 1, NULL, NULL, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -117,7 +119,8 @@ CREATE TABLE `cursos` (
 --
 
 INSERT INTO `cursos` (`curs_id`, `curs_nome`) VALUES
-(1, 'GESTÃO DE TI');
+(1, 'GESTÃO DE TI'),
+(2, 'ADS');
 
 -- --------------------------------------------------------
 
@@ -139,7 +142,8 @@ CREATE TABLE `empresas` (
 --
 
 INSERT INTO `empresas` (`empr_id`, `empr_nome`, `empr_contato_1`, `empr_contato_2`, `empr_cidade`, `empr_endereco`) VALUES
-(1, 'Jesmine Cook\'s', '(12) 9999-9999', NULL, 'Caraguatatuba - SP', 'Rua dos João, nº 88');
+(1, 'Jesmine Cook\'s', '(12) 9999-9999', NULL, 'Caraguatatuba - SP', 'Rua dos João, nº 88'),
+(2, 'Jerry Uncook\'s', '12032-23039', 'jerry@gmail.com', 'São Sebastião', 'Rua Joaninha, nº 98');
 
 -- --------------------------------------------------------
 
@@ -150,9 +154,18 @@ INSERT INTO `empresas` (`empr_id`, `empr_nome`, `empr_contato_1`, `empr_contato_
 CREATE TABLE `relatorio_final` (
   `rfin_id` int(11) NOT NULL,
   `rfin_sintese_empresa` varchar(1023) NOT NULL,
+  `rfin_anexo_1` varchar(255) DEFAULT NULL,
+  `rfin_anexo_2` varchar(255) DEFAULT NULL,
   `rfin_assinatura` varchar(255) DEFAULT NULL,
   `rfin_aprovado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `relatorio_final`
+--
+
+INSERT INTO `relatorio_final` (`rfin_id`, `rfin_sintese_empresa`, `rfin_anexo_1`, `rfin_anexo_2`, `rfin_assinatura`, `rfin_aprovado`) VALUES
+(13, 'asd', NULL, NULL, 'backend/uploads/relatorio-final/relatorio_assinado_13_1_1748571620_8328.pdf', 1);
 
 -- --------------------------------------------------------
 
@@ -175,6 +188,13 @@ CREATE TABLE `relatorio_inicial` (
   `rini_aprovado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `relatorio_inicial`
+--
+
+INSERT INTO `relatorio_inicial` (`rini_id`, `rini_como_ocorreu`, `rini_dev_cronograma`, `rini_preparacao_inicio`, `rini_dificul_encontradas`, `rini_aplic_conhecimento`, `rini_novas_ferramentas`, `rini_comentarios`, `rini_anexo_1`, `rini_anexo_2`, `rini_assinatura`, `rini_aprovado`) VALUES
+(20, 'Discorra sobre a forma como ocorreu a sua contratação:', 'Comente sobre o desenvolvimento de seu cronograma de estágio:', 'Discorra sobre como foi sua preparação para o início do estágio:', 'Discorra sobre as dificuldades encontradas no desenvolvimento e como foram solucionadas:', 'Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:', 'Houve contato com novas ferramentas, técnicas e/ou métodos, diferentes dos aprendidos durante o curso? Em caso positivo, cite-os e comente-os:', 'Outros comentários desejáveis:', '', '', 'backend/uploads/relatorio-inicial/relatorio_assinado_20_user_1_1748347602_5376.pdf', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -183,30 +203,27 @@ CREATE TABLE `relatorio_inicial` (
 
 CREATE TABLE `usuarios` (
   `user_id` int(11) NOT NULL,
-  `user_ra` int(11) NOT NULL,
+  `user_ra` int(11) DEFAULT NULL,
   `user_login` varchar(255) NOT NULL,
   `user_senha` varchar(255) NOT NULL,
   `user_nome` varchar(255) NOT NULL,
   `user_contato` varchar(127) DEFAULT NULL,
-  `user_id_curs` int(11) NOT NULL
+  `user_acesso` varchar(15) NOT NULL,
+  `user_id_curs` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `usuarios`
 --
 
-INSERT INTO `usuarios` (`user_id`, `user_ra`, `user_login`, `user_senha`, `user_nome`, `user_contato`, `user_id_curs`) VALUES
-(1, 123, 'user', 'user', 'Usuarinio da Silva', '(12) 99730-0000', 1);
+INSERT INTO `usuarios` (`user_id`, `user_ra`, `user_login`, `user_senha`, `user_nome`, `user_contato`, `user_acesso`, `user_id_curs`) VALUES
+(1, 123, 'user', 'user', 'Usuarinio da Silva', '(12) 99730-0000', 'aluno', 1),
+(3, NULL, 'admin', 'admin', 'Adiminio da Silva', '(12) admin-admin', 'admin', NULL),
+(4, 12322222, 'user2', 'user2', 'Usuario dois', '222-2222', 'aluno', 2);
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `admins`
---
-ALTER TABLE `admins`
-  ADD PRIMARY KEY (`admin_id`);
 
 --
 -- Indexes for table `atv_estagio_fin`
@@ -275,22 +292,16 @@ ALTER TABLE `usuarios`
 --
 
 --
--- AUTO_INCREMENT for table `admins`
---
-ALTER TABLE `admins`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `atv_estagio_fin`
 --
 ALTER TABLE `atv_estagio_fin`
-  MODIFY `atvf_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `atvf_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `atv_estagio_ini`
 --
 ALTER TABLE `atv_estagio_ini`
-  MODIFY `atvi_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `atvi_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT for table `ausencias`
@@ -302,37 +313,37 @@ ALTER TABLE `ausencias`
 -- AUTO_INCREMENT for table `contratos`
 --
 ALTER TABLE `contratos`
-  MODIFY `cntr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `cntr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `cursos`
 --
 ALTER TABLE `cursos`
-  MODIFY `curs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `curs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `empresas`
 --
 ALTER TABLE `empresas`
-  MODIFY `empr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `empr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `relatorio_final`
 --
 ALTER TABLE `relatorio_final`
-  MODIFY `rfin_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `rfin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `relatorio_inicial`
 --
 ALTER TABLE `relatorio_inicial`
-  MODIFY `rini_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `rini_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
