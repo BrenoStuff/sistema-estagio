@@ -14,7 +14,11 @@
         <?php echo isset($_GET['aviso']) ? $_GET['aviso'] : 'Erro desconhecido!'; ?>
     </div>
     
-    <a href="index.php" class="btn btn-primary">Voltar</a>
+    <?php if (isset($_GET['aviso']) && $_GET['aviso'] == 'Usuário não encontrado!') { ?>
+        <a href="backend/auth/logout.php" class="btn btn-primary">Deslogar</a>
+    <?php } else { ?>
+        <a href="index.php" class="btn btn-primary">Voltar</a>
+    <?php } ?>
     <br><br>
     
 
