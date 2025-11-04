@@ -4,95 +4,126 @@ include_once '../helpers/db-connect.php';
 include_once '../helpers/format.php';
 include_once '../helpers/save-file.php';
 
-$rfin_id = $_POST['rfin_id_edit'];
-$cntr_id = $_POST['cntr_id_edit'];
+// ------------------------------------------------------------------
+// 1. Limpeza e filtragem dos dados de entrada
+// ------------------------------------------------------------------
+$rfin_id = filter_input(INPUT_POST, 'rfin_id_edit', FILTER_VALIDATE_INT);
+$cntr_id = filter_input(INPUT_POST, 'cntr_id_edit', FILTER_VALIDATE_INT);
+$rfin_sintese_empresa = filter_input(INPUT_POST, 'rfin_sintese_empresa_edit', FILTER_SANITIZE_SPECIAL_CHARS);
 
-$rfin_sintese_empresa = $_POST['rfin_sintese_empresa_edit'];
+// ------------------------------------------------------------------
+// 2. Lógica de Anexos (File Upload)
+// ------------------------------------------------------------------
 
-$rfin_anexo_1 = $_FILES['rfin_anexo_1_edit'];
-$rfin_anexo_2 = $_FILES['rfin_anexo_2_edit'];
-
-// Verifica se existe algum anexo na variavel $_FILES
-if (isset($_FILES['rfin_anexo_1']) && $_FILES['rfin_anexo_1']['error'] == UPLOAD_ERR_NO_FILE) {
-    $rfin_anexo_1 = null; // Nenhum arquivo enviado
-}
-if (isset($_FILES['rfin_anexo_2']) && $_FILES['rfin_anexo_2']['error'] == UPLOAD_ERR_NO_FILE) {
-    $rfin_anexo_2 = null; // Nenhum arquivo enviado
-}
+// Nomes de arquivo vêm de '..._edit'
+$rfin_anexo_1_file = (isset($_FILES['rfin_anexo_1_edit']) && $_FILES['rfin_anexo_1_edit']['error'] != UPLOAD_ERR_NO_FILE) ? $_FILES['rfin_anexo_1_edit'] : null;
+$rfin_anexo_2_file = (isset($_FILES['rfin_anexo_2_edit']) && $_FILES['rfin_anexo_2_edit']['error'] != UPLOAD_ERR_NO_FILE) ? $_FILES['rfin_anexo_2_edit'] : null;
 
 // Diretórios de upload
 $upload_dir = __DIR__ . '/../uploads/relatorio-anexos/'; // Caminho absoluto
 $relative_dir = 'backend/uploads/relatorio-anexos/'; // Caminho relativo para o banco de dados
+$relative_dir_safe = rtrim($relative_dir, '/\\') . DIRECTORY_SEPARATOR; // Garante o separador
 $nome_base = 'relatorio_anexo_';
 
-if ($rfin_anexo_1 != null) {
-    $resultado = uploadPDF($rfin_anexo_1, $upload_dir, $nome_base . '_1_' . $rfin_id);
+$rfin_anexo_1_path = null;
+if ($rfin_anexo_1_file != null) {
+    $resultado = uploadPDF($rfin_anexo_1_file, $upload_dir, $nome_base . '_1_' . $rfin_id);
     if (!$resultado['success']) {
         header("Location:" . BASE_URL . "error.php?aviso=" . urlencode($resultado['error']));
         exit();
     }
-    $rfin_anexo_1 = $relative_dir . $resultado['file_name'];
-} else {
-    $rfin_anexo_1 = null;
+    $rfin_anexo_1_path = $relative_dir_safe . $resultado['file_name'];
 }
 
-if ($rfin_anexo_2 != null) {
-    $resultado = uploadPDF($rfin_anexo_2, $upload_dir, $nome_base . '_2_' . $rfin_id);
+$rfin_anexo_2_path = null;
+if ($rfin_anexo_2_file != null) {
+    $resultado = uploadPDF($rfin_anexo_2_file, $upload_dir, $nome_base . '_2_' . $rfin_id);
     if (!$resultado['success']) {
         header("Location:" . BASE_URL . "error.php?aviso=" . urlencode($resultado['error']));
         exit();
     }
-    $rfin_anexo_2 = $relative_dir . $resultado['file_name'];
-} else {
-    $rfin_anexo_2 = null;
+    $rfin_anexo_2_path = $relative_dir_safe . $resultado['file_name'];
 }
+// Nota: A lógica original define o path como NULL se nenhum arquivo for enviado.
 
-// Atividades
+// ------------------------------------------------------------------
+// 3. Lógica de Atividades (Arrays Sincronizados)
+// ------------------------------------------------------------------
 $atividades = array();
 $resumos = array();
 $disciplinas = array();
 for ($i = 1; $i <= 10; $i++) {
-    if (isset($_POST['atividade' . $i . '_final_edit']) && !empty($_POST['atividade' . $i . '_final_edit']) && trim($_POST['atividade' . $i . '_final_edit']) !== '') {
-        $atividades[] = $_POST['atividade' . $i . '_final_edit'];
-        $resumos[] = $_POST['resumo' . $i . '_final_edit'];
-        $disciplinas[] = $_POST['disciplina' . $i . '_final_edit'];
+    $atividade = filter_input(INPUT_POST, 'atividade' . $i . '_final_edit', FILTER_SANITIZE_SPECIAL_CHARS);
+    if (!empty($atividade) && trim($atividade) !== '') {
+        $atividades[] = $atividade;
+        $resumos[] = filter_input(INPUT_POST, 'resumo' . $i . '_final_edit', FILTER_SANITIZE_SPECIAL_CHARS);
+        $disciplinas[] = filter_input(INPUT_POST, 'disciplina' . $i . '_final_edit', FILTER_SANITIZE_SPECIAL_CHARS);
     }
 }
 
-// Deleta as atividades antigas, se existirem
-$sql = "DELETE FROM atv_estagio_fin WHERE atvf_id_relatorio_fin = $rfin_id";
-if ($conexao->query($sql) === TRUE) {
-    // Insere as novas atividades
+// ------------------------------------------------------------------
+// 4. Conexão com Banco de Dados e Transações PDO
+// ------------------------------------------------------------------
+
+try {
+    // Inicia a Transação PDO
+    $conexao->beginTransaction();
+
+    // A) Deleta as atividades antigas (Com Prepared Statement)
+    $sql_delete = "DELETE FROM atv_estagio_fin WHERE atvf_id_relatorio_fin = ?";
+    $stmt_delete = $conexao->prepare($sql_delete);
+    $stmt_delete->execute([$rfin_id]);
+
+    // B) Insere as novas atividades (Com Prepared Statement dentro do loop)
+    $sql_insert_atv = "INSERT INTO atv_estagio_fin (atvf_atividade, atvf_resumo, atvf_disciplina_relacionada, atvf_id_relatorio_fin) 
+                       VALUES (?, ?, ?, ?)";
+    $stmt_insert_atv = $conexao->prepare($sql_insert_atv);
+    
     foreach ($atividades as $key => $atividade) {
-        $resumo = $resumos[$key];
-        $disciplina = $disciplinas[$key];
-
-        $sql = "INSERT INTO atv_estagio_fin (atvf_atividade, atvf_resumo, atvf_disciplina_relacionada, atvf_id_relatorio_fin) VALUES ('$atividade', '$resumo', '$disciplina', $rfin_id)";
-        if ($conexao->query($sql) !== TRUE) {
-            header("Location:" . BASE_URL . "error.php?aviso=Erro ao inserir atividade: " . $conexao->error);
-            exit();
-        }
+        $stmt_insert_atv->execute([
+            $atividade, 
+            $resumos[$key], 
+            $disciplinas[$key], 
+            $rfin_id
+        ]);
     }
 
-    // Atualiza o relatório final
-    $sql = "UPDATE relatorio_final SET rfin_sintese_empresa = '$rfin_sintese_empresa', rfin_anexo_1 = '$rfin_anexo_1', rfin_anexo_2 = '$rfin_anexo_2' WHERE rfin_id = $rfin_id";
-    if ($conexao->query($sql) === TRUE) {
-        // Atualiza o contrato com o ID do relatório final
-        $sql = "UPDATE contratos SET cntr_id_relatorio_final = $rfin_id WHERE cntr_id = $cntr_id";
-        if ($conexao->query($sql) === TRUE) {
-            header("Location:" . BASE_URL . "index.php?aviso=Relatório final atualizado com sucesso!");
-        } else {
-            header("Location:" . BASE_URL . "error.php?aviso=Erro ao atualizar contrato: " . $conexao->error);
-            exit();
-        }
-    } else {
-        header("Location:" . BASE_URL . "error.php?aviso=Erro ao atualizar relatório final: " . $conexao->error);
-        exit();
+    // C) Atualiza o relatório final (Com Prepared Statement)
+    $sql_update_rfin = "UPDATE relatorio_final SET 
+                            rfin_sintese_empresa = ?, 
+                            rfin_anexo_1 = ?, 
+                            rfin_anexo_2 = ? 
+                        WHERE rfin_id = ?";
+    $stmt_update_rfin = $conexao->prepare($sql_update_rfin);
+    $stmt_update_rfin->execute([
+        $rfin_sintese_empresa, 
+        $rfin_anexo_1_path, 
+        $rfin_anexo_2_path, 
+        $rfin_id
+    ]);
+
+    // D) Atualiza o contrato (Com Prepared Statement)
+    // (A lógica original atualiza o contrato mesmo se o ID não mudou)
+    $sql_update_cntr = "UPDATE contratos SET cntr_id_relatorio_final = ? WHERE cntr_id = ?";
+    $stmt_update_cntr = $conexao->prepare($sql_update_cntr);
+    $stmt_update_cntr->execute([$rfin_id, $cntr_id]);
+
+    // E) Se tudo deu certo, confirma a transação
+    $conexao->commit();
+    
+    header("Location:" . BASE_URL . "index.php?aviso=Relatório final atualizado com sucesso!");
+    exit();
+
+} catch (PDOException $e) {
+    // Em caso de qualquer erro, desfaz a transação inteira
+    if ($conexao->inTransaction()) {
+        $conexao->rollBack();
     }
-} else {
-    header("Location:" . BASE_URL . "error.php?aviso=Erro ao excluir atividades do relatório: " . $conexao->error);
+
+    // Tratamento de erro seguro
+    error_log("Erro PDO ao atualizar relatório final: " . $e->getMessage());
+    $aviso = "Erro interno ao atualizar o relatório. Tente novamente mais tarde.";
+    header("Location:" . BASE_URL . "error.php?aviso=" . urlencode($aviso));
     exit();
 }
-
-
 ?>

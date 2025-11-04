@@ -1,46 +1,66 @@
 <?php
 include_once '../../config.php';
-include_once '../helpers/db-connect.php';
+include_once '../helpers/db-connect.php'; 
 
-// Recebe o ID do relatório
-$rini_id = $_POST['rini_id'];
+// 1. Dados recebidos e filtragem de entrada
+$rini_id = filter_input(INPUT_POST, 'rini_id', FILTER_VALIDATE_INT);
 
-// Busca o caminho do arquivo no banco
-$sql = "SELECT rini_assinatura FROM relatorio_inicial WHERE rini_id = $rini_id";
-$result = $conexao->query($sql);
+if (!$rini_id) {
+    $aviso = "ID de relatório inválido.";
+    header("Location:" . BASE_URL . "error.php?aviso=" . urlencode($aviso));
+    exit();
+}
 
-if ($result && $result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $caminho_relativo = $row['rini_assinatura'];
+try {
+    // Inicia a Transação PDO
+    $conexao->beginTransaction();
 
+    // 2. A) Seleciona o caminho do arquivo ANTES de deletar
+    $sql_select = "SELECT rini_assinatura FROM relatorio_inicial WHERE rini_id = ?";
+    $stmt_select = $conexao->prepare($sql_select);
+    $stmt_select->execute([$rini_id]);
+    $resultado = $stmt_select->fetch();
+
+    $caminho_relativo = $resultado ? $resultado['rini_assinatura'] : null;
+
+    // 3. B) Atualiza o banco de dados (define o campo como NULL)
+    $sql_update = "UPDATE relatorio_inicial SET rini_assinatura = NULL WHERE rini_id = ?";
+    $stmt_update = $conexao->prepare($sql_update);
+    $execucao = $stmt_update->execute([$rini_id]);
+
+    if (!$execucao) {
+        throw new PDOException("Falha ao atualizar o banco de dados.");
+    }
+
+    // 4. C) Exclui o arquivo físico do servidor
     if ($caminho_relativo) {
-        // Monta o caminho absoluto no servidor
-        $caminho_arquivo = __DIR__ . '/../../' . $caminho_relativo;
-
-        // Verifica se o arquivo existe e deleta
-        if (file_exists($caminho_arquivo)) {
-            if (!unlink($caminho_arquivo)) {
-                header("Location:" . BASE_URL . "error.php?aviso=Erro ao excluir o arquivo do servidor.");
-                exit();
+        // Constrói o caminho absoluto no servidor
+        $caminho_absoluto = __DIR__ . '/../../' . $caminho_relativo;
+        
+        if (file_exists($caminho_absoluto) && !is_dir($caminho_absoluto)) {
+            if (!unlink($caminho_absoluto)) {
+                // Se a exclusão do arquivo falhar, desfaz a transação do banco
+                throw new Exception("Falha ao excluir o arquivo físico no servidor.");
             }
         }
     }
 
-    // Atualiza o banco, remove o caminho do PDF
-    $sql_update = "UPDATE relatorio_inicial
-                   SET rini_assinatura = NULL
-                   WHERE rini_id = $rini_id";
+    // 5. Confirma a Transação (Aplica as mudanças no banco)
+    $conexao->commit();
+    
+    header("Location:" . BASE_URL . "index.php?aviso=PDF de assinatura excluído com sucesso.");
+    exit();
 
-    if ($conexao->query($sql_update) === TRUE) {
-        header("Location:" . BASE_URL . "index.php?aviso=Arquivo excluído com sucesso.");
-        exit();
-    } else {
-        header("Location:" . BASE_URL . "error.php?aviso=Erro ao atualizar o banco.");
-        exit();
+} catch (Exception $e) { // Captura PDOException e Exception (de falha no unlink)
+    // Desfaz a Transação em caso de qualquer erro
+    if ($conexao->inTransaction()) {
+        $conexao->rollBack();
     }
 
-} else {
-    header("Location:" . BASE_URL . "error.php?aviso=Relatório não encontrado.");
+    // Tratamento de erro seguro: registra o erro (log) e mostra mensagem genérica
+    error_log("Erro PDO ao excluir PDF do relatório inicial: " . $e->getMessage());
+    $aviso = "Erro interno ao excluir o PDF. Tente novamente mais tarde.";
+    header("Location:" . BASE_URL . "error.php?aviso=" . urlencode($aviso));
     exit();
 }
 ?>

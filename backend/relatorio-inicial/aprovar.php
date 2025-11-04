@@ -1,23 +1,34 @@
 <?php
 include_once '../../config.php';
-include_once '../helpers/db-connect.php';
+include_once '../helpers/db-connect.php'; 
 
+// Dados recebidos e filtragem de entrada (Segurança)
+$rini_id = filter_input(INPUT_POST, 'rini_id', FILTER_VALIDATE_INT);
 
-// Dados recebidos
-$rini_id = $_POST['rini_id'];
+// Query com Prepared Statement PDO usando o placeholder (?)
+$sql = "UPDATE relatorio_inicial SET rini_aprovado = 1 WHERE rini_id = ?";
 
-$sql = "UPDATE relatorio_inicial SET rini_aprovado = 1 WHERE rini_id = '$rini_id'";
-$stmt = $conexao->prepare($sql);
-if ($stmt) {
-    if ($stmt->execute()) {
+try {
+    $stmt = $conexao->prepare($sql);
+
+    // Execução segura, passando o ID como um array
+    $execucao = $stmt->execute([$rini_id]);
+    
+    if ($execucao) {
+        // Sucesso
         header("location: " . BASE_URL . "admin");
         exit();
     } else {
-        header("location: " . BASE_URL . "error.php?aviso=Erro ao aprovar relatório inicial: " . $stmt->error);
+        // Falha na execução que não lançou exceção (Fallback)
+        header("location: " . BASE_URL . "error.php?aviso=Erro ao aprovar relatório inicial: Falha inesperada na execução.");
         exit();
     }
-    $stmt->close();
-} else {
-    header("location: " . BASE_URL . "error.php?aviso=Erro ao preparar a consulta: " . $conexao->error);
+
+} catch (PDOException $e) {
+    // Tratamento de erro seguro: registra o erro (log) e mostra mensagem genérica
+    error_log("Erro PDO ao aprovar relatório inicial: " . $e->getMessage());
+    $aviso = "Erro interno ao aprovar relatório inicial. Tente novamente mais tarde.";
+    header("location: " . BASE_URL . "error.php?aviso=" . urlencode($aviso));
     exit();
 }
+?>
