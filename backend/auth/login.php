@@ -1,5 +1,5 @@
 <?php
-// Inclui o arquivo de conexão PDO
+require_once '../../config.php';
 require_once '../helpers/db-connect.php';
 
 // Limpeza básica dos dados de entrada

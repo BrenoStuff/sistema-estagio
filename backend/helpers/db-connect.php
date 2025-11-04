@@ -1,5 +1,4 @@
 <?php
-
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'sistema-estagio');
 define('DB_USER', 'root');
@@ -28,7 +27,7 @@ try {
     
     // Redireciona com uma mensagem genérica para o usuário
     $aviso = "Erro de conexão com o banco de dados. Tente mais tarde.";
-    header("Location: ../error.php?aviso=$aviso");
+    header("Location: " . BASE_URL . "error.php?aviso=" . urlencode($aviso));
     exit();
 }
 
