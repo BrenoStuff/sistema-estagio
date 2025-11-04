@@ -194,12 +194,12 @@ function h($str) {
 
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingRelatorios">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRelatorios" aria-expanded="true" aria-controls="collapseRelatorios">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRelatorios" aria-expanded="true" aria-controls="collapseRelatorios">
                         <i class="fas fa-file-alt me-2"></i> Relatórios Pendentes
                         <span class="badge bg-warning text-dark ms-2"><?php echo count($relatorio_ini_esperando) + count($relatorio_fin_esperando); ?></span>
                     </button>
                 </h2>
-                <div id="collapseRelatorios" class="accordion-collapse collapse show" aria-labelledby="headingRelatorios" data-bs-parent="#adminAccordion">
+                <div id="collapseRelatorios" class="accordion-collapse collapse" aria-labelledby="headingRelatorios" data-bs-parent="#adminAccordion">
                     <div class="accordion-body">
                         <div class="row">
                             <div class="col-md-6 mb-4">
@@ -300,7 +300,7 @@ function h($str) {
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingAcoes">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAcoes" aria-expanded="false" aria-controls="collapseAcoes">
-                        <i class="fas fa-plus-circle me-2"></i> Ações Rápidas de Cadastro
+                        <i class="fas fa-plus-circle me-2"></i> Cadastros Rápidos (Adicionar)
                     </button>
                 </h2>
                 <div id="collapseAcoes" class="accordion-collapse collapse" aria-labelledby="headingAcoes" data-bs-parent="#adminAccordion">
@@ -324,14 +324,18 @@ function h($str) {
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <div class="container-fluid px-md-5 mt-4">
+        <div class="accordion" id="adminAccordion2">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingContratos">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContratos" aria-expanded="false" aria-controls="collapseContratos">
+                    <button class="accordion-button collapse show" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContratos" aria-expanded="false" aria-controls="collapseContratos">
                         <i class="fas fa-table me-2"></i> Visão Geral dos Contratos
                     </button>
                 </h2>
-                <div id="collapseContratos" class="accordion-collapse collapse" aria-labelledby="headingContratos" data-bs-parent="#adminAccordion">
+                <div id="collapseContratos" class="accordion-collapse collapse show" aria-labelledby="headingContratos" data-bs-parent="#adminAccordion">
                     <div class="accordion-body">
                         <div class="row">
                             <div class="col-md-12 mb-4">
@@ -351,7 +355,7 @@ function h($str) {
                                                             <th>Curso</th>
                                                             <th>Status</th>
                                                             <th>Ações</th>
-                                                            </tr>
+                                                        </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php foreach ($tabela_tudo as $row) { ?>
@@ -392,7 +396,7 @@ function h($str) {
                                                                         <i class="fas fa-eye"></i> Ver Mais
                                                                     </button>
                                                                 </td>
-                                                                </tr>
+                                                            </tr>
                                                         <?php } ?>
                                                     </tbody>
                                                 </table>
@@ -407,8 +411,111 @@ function h($str) {
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-        </div> </div>
+    <div class="container-fluid px-md-5 mt-4">
+        <div class="accordion" id="adminAccordion3">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingEmpresas">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEmpresas" aria-expanded="false" aria-controls="collapseEmpresas">
+                        <i class="fas fa-building me-2"></i> Gerenciamento de Empresas
+                    </button>
+                </h2>
+                <div id="collapseEmpresas" class="accordion-collapse collapse" aria-labelledby="headingEmpresas" data-bs-parent="#adminAccordion">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                                        <h2 class="h5 m-0 font-weight-bold text-primary">Empresas Cadastradas</h2>
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addEmpresaModal"><i class="fas fa-plus"></i> Adicionar Nova</button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                            <table class="table table-striped table-hover small">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Nome</th>
+                                                        <th>Cidade</th>
+                                                        <th>Ação</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($empresas as $empresa) { ?>
+                                                    <tr>
+                                                        <td><?php echo h($empresa['empr_id']); ?></td>
+                                                        <td><?php echo h($empresa['empr_nome']); ?></td>
+                                                        <td><?php echo h($empresa['empr_cidade']); ?></td>
+                                                        <td>
+                                                            <form action="../backend/empresas/deletar.php" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir esta empresa? Isso pode afetar contratos existentes.');" class="d-inline">
+                                                                <input type="hidden" name="empr_id" value="<?php echo h($empresa['empr_id']); ?>">
+                                                                <button type="submit" class="btn btn-sm btn-danger" title="Deletar Empresa"><i class="fas fa-trash-alt"></i></button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                    <?php } ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingCursos">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCursos" aria-expanded="false" aria-controls="collapseCursos">
+                        <i class="fas fa-graduation-cap me-2"></i> Gerenciamento de Cursos
+                    </button>
+                </h2>
+                <div id="collapseCursos" class="accordion-collapse collapse" aria-labelledby="headingCursos" data-bs-parent="#adminAccordion">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                                        <h2 class="h5 m-0 font-weight-bold text-primary">Cursos Cadastrados</h2>
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addCursoModal"><i class="fas fa-plus"></i> Adicionar Novo</button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                            <table class="table table-striped table-hover small">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Nome</th>
+                                                        <th>Ação</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($cursos as $curso) { ?>
+                                                    <tr>
+                                                        <td><?php echo h($curso['curs_id']); ?></td>
+                                                        <td><?php echo h($curso['curs_nome']); ?></td>
+                                                        <td>
+                                                            <form action="../backend/cursos/deletar.php" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este curso? Isso pode afetar alunos e contratos existentes.');" class="d-inline">
+                                                                <input type="hidden" name="curs_id" value="<?php echo h($curso['curs_id']); ?>">
+                                                                <button type="submit" class="btn btn-sm btn-danger" title="Deletar Curso"><i class="fas fa-trash-alt"></i></button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                    <?php } ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div> </div>
 
     <div class="modal fade" id="addContratoModal" tabindex="-1" aria-labelledby="addContratoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -671,6 +778,7 @@ function h($str) {
             </div>
         </div>
     </div>
+
     <?php require '../components/footer.php'; ?>
 
     <script>
@@ -736,5 +844,6 @@ function h($str) {
         });
     });
     </script>
-    </body>
+
+</body>
 </html>
