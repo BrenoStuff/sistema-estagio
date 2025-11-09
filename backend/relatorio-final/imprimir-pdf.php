@@ -203,7 +203,6 @@ require_once '../../components/head.php';
 
     .page-footer {
         text-align: center;
-        text-muted: small;
         margin-top: 1.5cm; /* Margem superior para separar do conteúdo */
         padding-top: 10px;
         border-top: 1px solid #AAA;
