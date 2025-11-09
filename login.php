@@ -1,82 +1,79 @@
 <?php require 'config.php'; ?>
 <?php 
 // Define $title ANTES de incluir o head.php
-$title = SIS_NAME . " - Login"; 
+$title = SIS_NAME . " - Entrar"; 
 ?>
 <?php require 'components/head.php'; ?>
 
 <!-- 
-  Layout de <body> modificado para centralizar o conteúdo:
-  - d-flex: Ativa o Flexbox
-  - flex-column: Organiza os itens em coluna (main e footer)
-  - min-vh-100: Garante que o corpo ocupe pelo menos 100% da altura da tela
-  - bg-body-tertiary: Fundo que reage ao modo claro/escuro
+  CSS Adicional para o estilo Microsoft:
+  - Define a largura máxima do card e o fundo branco
 -->
-<body class="d-flex flex-column min-vh-100 bg-body-tertiary">
+<style>
+  .login-card-wrapper {
+    max-width: 440px;
+    width: 100%;
+  }
+</style>
 
-    <!-- 
-      Container principal:
-      - flex-grow-1: Faz este container "crescer" e ocupar o espaço, empurrando o footer para baixo.
-      - d-flex align-items-center justify-content-center: Centraliza o card de login vertical e horizontalmente.
-    -->
-    <main class="container flex-grow-1 d-flex align-items-center justify-content-center">
-        <div class="col-lg-4 col-md-6 col-sm-8">
-            
-            <!-- Card de Login -->
-            <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-body p-4 p-sm-5">
 
-                    <!-- Título e Ícone -->
-                    <div class="text-center mb-4">
-                        <i class="fas fa-book-reader fa-3x text-primary"></i>
-                        <h1 class="h3 fw-bold mt-2 mb-0"><?php echo SIS_NAME; ?></h1>
-                        <p class="text-muted">Acesse seu painel de estágios</p>
-                    </div>
+<body class="d-flex flex-column min-vh-100 bg-light">
+  <main class="container flex-grow-1 d-flex align-items-center justify-content-center">
+    <div class="login-card-wrapper">
+      <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body bg-white p-4 p-sm-5">
+          
+          <!-- Logo -->
+          <div class="mb-4">
+            <i class="fab fa-microsoft fa-2x" style="color: #5E5E5E;"></i>
+          </div>
 
-                    <!-- Alerta de Erro (movido para dentro do card) -->
-                    <?php if (isset($_GET['aviso'])) { ?>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            <?php echo htmlspecialchars($_GET['aviso']); // Adiciona h() por segurança ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    <?php } ?>
+          <h1 class="h4 fw-bold mb-3">Entrar</h1>
+          <p class="text-muted small">Use seu login e senha do sistema.</p>
 
-                    <!-- Formulário com Input Groups -->
-                    <form action="<?php echo BASE_URL;?>backend/auth/login.php" method="POST">
-                        <label for="login" class="form-label small">Login</label>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control" id="login" name="login" placeholder="Login" required>
-                        </div>
-                        
-                        <label for="senha" class="form-label small">Senha</label>
-                        <div class="input-group mb-4">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                            <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" required>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100 btn-lg">
-                            <i class="fas fa-sign-in-alt me-2"></i>Entrar
-                        </button>
-                    </form>
-                    
-                    <!-- Placeholder para o login da Microsoft -->
-                    <div class="text-center mt-4">
-                        <p class="text-muted small">Futuramente, o login será integrado com sua conta Microsoft.</p>
-                    </div>
 
-                </div>
+          <!-- Aviso de Erro -->
+          <?php if (isset($_GET['aviso'])) { ?>
+            <div class="alert alert-danger p-2 small mb-3" role="alert">
+              <?php echo htmlspecialchars($_GET['aviso']); // Adiciona h() por segurança ?>
             </div>
-        </div>
-    </main>
+          <?php } ?>
+          
+          <form action="<?php echo BASE_URL;?>backend/auth/login.php" method="POST">
+            
+            <!-- Mantendo os Floating Labels do seu código, pois são visualmente similares -->
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="login" name="login" placeholder="Email, RA ou login" required>
+              <label for="login">Login</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" required>
+              <label for="senha">Senha</label>
+            </div>
+            
+            <!-- Botão de Entrar alinhado à direita, como na MS -->
+            <div class="d-flex justify-content-end mt-4">
+              <button type="submit" class="btn btn-primary px-4 py-2">Entrar</button>
+            </div>
 
-    <!-- 
-      Rodapé:
-      - mt-auto: Margem superior automática, empurra o rodapé para o fim do container flex (body).
-    -->
-    <div class="mt-auto">
-        <?php require 'components/footer.php'; ?>
+          </form>
+
+        </div>
+      </div>
+      
+      <!-- Aviso de login futuro da MS -->
+      <div class="text-center text-muted small mt-4">
+        Futuramente, o login será integrado com a conta Microsoft.
+      </div>
+
     </div>
+  
+  </main>
+
+  <div class="mt-auto w-100">
+    <?php require 'components/footer.php'; ?>
+  </div>
+
 </body>
 </html>
