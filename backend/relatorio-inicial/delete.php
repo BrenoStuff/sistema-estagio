@@ -3,7 +3,6 @@ include_once '../../config.php';
 include_once '../helpers/db-connect.php'; 
 
 // 1. Dados recebidos e filtragem de entrada (Segurança)
-// Precisamos do ID do relatório (para excluir) e do contrato (para atualizar)
 $rini_id = filter_input(INPUT_POST, 'rini_id', FILTER_VALIDATE_INT);
 $cntr_id = filter_input(INPUT_POST, 'cntr_id', FILTER_VALIDATE_INT);
 
@@ -16,8 +15,30 @@ if (!$rini_id || !$cntr_id) {
 
 try {
     // Inicia a Transação PDO
-    // Garante que todas as operações sejam concluídas com sucesso ou nenhuma seja aplicada.
     $conexao->beginTransaction(); 
+
+    // **** NOVO PASSO 1: Buscar os caminhos dos arquivos ANTES de deletar o registro ****
+    // Precisamos saber quais arquivos deletar do servidor.
+    $sql_select = "SELECT rini_assinatura, rini_anexo_1, rini_anexo_2 FROM relatorio_inicial WHERE rini_id = ?";
+    $stmt_select = $conexao->prepare($sql_select);
+    $stmt_select->execute([$rini_id]);
+    $relatorio = $stmt_select->fetch();
+
+    $arquivos_para_deletar = [];
+    if ($relatorio) {
+        // Adiciona os caminhos dos arquivos (se existirem) a um array
+        // O caminho salvo no DB (ex: 'backend/uploads/...') é relativo ao ROOT.
+        // O script 'delete.php' está em 'backend/relatorio-inicial/', então subimos (../../) para o ROOT.
+        if (!empty($relatorio['rini_assinatura'])) {
+            $arquivos_para_deletar[] = '../../' . $relatorio['rini_assinatura'];
+        }
+        if (!empty($relatorio['rini_anexo_1'])) {
+            $arquivos_para_deletar[] = '../../' . $relatorio['rini_anexo_1'];
+        }
+        if (!empty($relatorio['rini_anexo_2'])) {
+            $arquivos_para_deletar[] = '../../' . $relatorio['rini_anexo_2'];
+        }
+    }
 
     // 2. A) DELETE: Excluir atividades relacionadas (Tabela Filha)
     $sql_delete_atv = "DELETE FROM atv_estagio_ini WHERE atvi_id_relatorio_ini = ?";
@@ -34,15 +55,32 @@ try {
     $stmt_rini = $conexao->prepare($sql_delete_rini);
     $execucao = $stmt_rini->execute([$rini_id]);
 
-    if ($execucao) {
+    // **** NOVO PASSO 5: Deletar os arquivos físicos do servidor ****
+    $erro_arquivo = false;
+    foreach ($arquivos_para_deletar as $arquivo) {
+        if (file_exists($arquivo)) {
+            // Tenta deletar o arquivo
+            if (!unlink($arquivo)) {
+                // Se falhar, marca o erro e registra no log
+                $erro_arquivo = true;
+                error_log("Falha ao deletar arquivo físico: " . $arquivo);
+            }
+        }
+    }
+
+    if ($execucao && !$erro_arquivo) {
         // Confirma a Transação: Aplica todas as mudanças no banco
         $conexao->commit(); 
-        header("Location: ../../index.php?aviso=Relatório inicial deletado com sucesso!");
+        header("Location: ../../index.php?aviso=Relatório inicial e arquivos deletados com sucesso!");
         exit();
     } else {
-        // Se a execução principal falhar (improvável com exceções ativas)
+        // Se a execução do DB falhou OU a exclusão do arquivo falhou, desfaz tudo.
         $conexao->rollBack();
-        header("location: " . BASE_URL . "error.php?aviso=Erro ao deletar relatório: Falha inesperada.");
+        if ($erro_arquivo) {
+             header("location: " . BASE_URL . "error.php?aviso=Erro ao deletar os arquivos PDF do servidor. A exclusão do relatório foi cancelada.");
+        } else {
+             header("location: " . BASE_URL . "error.php?aviso=Erro ao deletar relatório: Falha inesperada.");
+        }
         exit();
     }
 
