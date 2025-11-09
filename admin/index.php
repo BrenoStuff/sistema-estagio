@@ -227,9 +227,9 @@ function h($str) {
                                                                 <td><?php echo h($row['empr_nome']); ?></td>
                                                                 <td>
                                                                     <a href="<?php echo BASE_URL . h($row['rini_assinatura']); ?>" target="_blank" class="btn btn-sm btn-info text-white" title="Ver Relatório"><i class="fas fa-external-link-alt"></i></a>
-                                                                    <form action="../backend/relatorio-inicial/excluir-pdf.php" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este relatório?');" class="d-inline me-1">
+                                                                    <form action="../backend/relatorio-inicial/reprovar.php" method="POST" onsubmit="return confirm('Tem certeza que deseja reprovar este relatório?');" class="d-inline me-1">
                                                                         <input type="hidden" name="rini_id" value="<?php echo h($row['rini_id']); ?>">
-                                                                        <button type="submit" class="btn btn-sm btn-danger" title="Excluir Relatório"><i class="fas fa-trash-alt"></i></button>
+                                                                        <button type="submit" class="btn btn-sm btn-danger" title="Reprovar Relatório"><i class="fas fa-times"></i></button>
                                                                     </form>
                                                                     <form action="../backend/relatorio-inicial/aprovar.php" method="POST" class="d-inline">
                                                                         <input type="hidden" name="rini_id" value="<?php echo h($row['rini_id']); ?>">
@@ -272,9 +272,9 @@ function h($str) {
                                                                 <td><?php echo h($row['empr_nome']); ?></td>
                                                                 <td>
                                                                     <a href="<?php echo BASE_URL . h($row['rfin_assinatura']); ?>" target="_blank" class="btn btn-sm btn-info text-white" title="Ver Relatório"><i class="fas fa-external-link-alt"></i></a>
-                                                                    <form action="../backend/relatorio-final/excluir-pdf.php" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este relatório?');" class="d-inline me-1">
+                                                                    <form action="../backend/relatorio-final/reprovar.php" method="POST" onsubmit="return confirm('Tem certeza que deseja reprovar este relatório?');" class="d-inline me-1">
                                                                         <input type="hidden" name="rfin_id" value="<?php echo h($row['rfin_id']); ?>">
-                                                                        <button type="submit" class="btn btn-sm btn-danger" title="Excluir Relatório"><i class="fas fa-trash-alt"></i></button>
+                                                                        <button type="submit" class="btn btn-sm btn-danger" title="Reprovar Relatório"><i class="fas fa-times"></i></button>
                                                                     </form>
                                                                     <form action="../backend/relatorio-final/aprovar.php" method="POST" class="d-inline">
                                                                         <input type="hidden" name="rfin_id" value="<?php echo h($row['rfin_id']); ?>">
@@ -387,8 +387,8 @@ function h($str) {
                                                                         data-bs-empresa-endereco="<?php echo h($row['empr_endereco']); ?>"
                                                                         data-bs-data-inicio="<?php echo date('d/m/Y', strtotime(h($row['cntr_data_inicio']))); ?>"
                                                                         data-bs-data-fim="<?php echo date('d/m/Y', strtotime(h($row['cntr_data_fim']))); ?>"
-                                                                        data-bs-horario="<?php echo h($row['cntr_escala_horario']); ?>"
-                                                                        data-bs-remunerado="<?php echo $row['cntr_remunerado'] ? 'Sim' : 'Não'; ?>"
+                                                                        data-bs-horario="<?php echo h($row['cntr_hora_inicio']); ?> às <?php echo h($row['cntr_hora_final']); ?>"
+                                                                        data-bs-remunerado="<?php echo $row['cntr_tipo_estagio'] ? 'Sim' : 'Não'; ?>"
                                                                         data-bs-status="<?php echo $badge_text; ?>"
                                                                         data-bs-link-termo="<?php echo BASE_URL . h($row['cntr_termo_contrato']); ?>"
                                                                         data-bs-link-anexo="<?php echo $row['cntr_anexo_extra'] ? BASE_URL . h($row['cntr_anexo_extra']) : ''; ?>"
@@ -553,20 +553,24 @@ function h($str) {
                             <input type="date" class="form-control" name="cntr_data_fim" required>
                         </div>
                         <div class="mb-3">
-                            <label for="cntr_escala_horario" class="form-label">Escala de Horário</label>
-                            <input type="text" class="form-control" name="cntr_escala_horario" placeholder="Ex: 12h às 18h" required>
+                            <label for="cntr_hora_inicio" class="form-label">Horário de Início</label>
+                            <input type="time" class="form-control" name="cntr_hora_inicio" required>
                         </div>
                         <div class="mb-3">
-                            <label for="cntr_termo_contrato" class="form-label">Termo de Contrato</label>
+                            <label for="cntr_hora_final" class="form-label">Horário de Fim</label>
+                            <input type="time" class="form-control" name="cntr_hora_final" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cntr_termo_contrato" class="form-label">Termo de Compromisso</label>
                             <input type="file" class="form-control" name="cntr_termo_contrato" accept=".pdf" required>
                         </div>
                         <div class="mb-3">
-                            <label for="cntr_anexo_extra" class="form-label">Anexo Extra (opcional)</label>
+                            <label for="cntr_anexo_extra" class="form-label">Plano de Atividade (opcional)</label>
                             <input type="file" class="form-control" name="cntr_anexo_extra" accept=".pdf">
                         </div>
                         <div class="mb-3">
-                            <label for="cntr_remunerado" class="form-label">Remunerado</label>
-                            <select class="form-select" name="cntr_remunerado" required>
+                            <label for="cntr_tipo_estagio" class="form-label">Remunerado</label>
+                            <select class="form-select" name="cntr_tipo_estagio" required>
                                 <option value="1">Sim</option>
                                 <option value="0">Não</option>
                             </select>
@@ -600,6 +604,19 @@ function h($str) {
                         <div class="mb-3">
                             <label for="empr_nome" class="form-label">Nome da Empresa</label>
                             <input type="text" class="form-control" name="empr_nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="empr_cnpj" class="form-label">CNPJ</label>
+                            <input type="text" class="form-control" name="empr_cnpj" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="empr_tipo" class="form-label">Tipo de Empresa</label>
+                            <select class="form-select" name="empr_tipo" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="Privada">Privada</option>
+                                <option value="Pública">Pública</option>
+                                <option value="Mista">Mista</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="empr_contato_1" class="form-label">Contato 1</label>
@@ -729,6 +746,12 @@ function h($str) {
                             <dl class="row">
                                 <dt class="col-sm-4">Nome:</dt>
                                 <dd class="col-sm-8" id="modal-empresa-nome"></dd>
+
+                                <dt class="col-sm-4">CNPJ:</dt>
+                                <dd class="col-sm-8" id="modal-empresa-cnpj"></dd>
+
+                                <dt class="col-sm-4">Tipo:</dt>
+                                <dd class="col-sm-8" id="modal-empresa-tipo"></dd>
                                 
                                 <dt class="col-sm-4">Contato:</dt>
                                 <dd class="col-sm-8" id="modal-empresa-contato"></dd>
@@ -765,7 +788,7 @@ function h($str) {
                     <h4><i class="fas fa-folder-open"></i> Documentos</h4>
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <a href="#" id="modal-link-termo" target="_blank" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Ver Termo de Contrato</a>
+                            <a href="#" id="modal-link-termo" target="_blank" class="btn btn-primary"><i class="fas fa-file-pdf"></i> Ver Termo de Compromisso</a>
                         </li>
                         <li class="list-group-item" id="modal-anexo-item">
                             <a href="#" id="modal-link-anexo" target="_blank" class="btn btn-secondary"><i class="fas fa-file-pdf"></i> Ver Anexo Extra</a>

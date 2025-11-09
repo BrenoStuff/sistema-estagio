@@ -66,7 +66,7 @@ $empresa_cidade = h($relatorio['empr_cidade']);
 $curso = h($relatorio['curs_nome']);
 $data_inicio = date('d/m/Y', strtotime(h($relatorio['cntr_data_inicio'])));
 // $data_fim = date('d/m/Y', strtotime(h($relatorio['cntr_data_fim']))); // Removido
-$horario = h($relatorio['cntr_escala_horario']);
+$horario = h($relatorio['cntr_hora_inicio']) . " às " . h($relatorio['cntr_hora_final']);
 
 // **** NOVO: Data atual para o período ****
 $data_impressao = date('d/m/Y'); // Data atual

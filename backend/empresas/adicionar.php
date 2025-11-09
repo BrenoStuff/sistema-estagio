@@ -4,6 +4,8 @@ require_once '../helpers/db-connect.php';
 
 // Limpeza e filtragem dos dados de entrada
 $empr_nome = filter_input(INPUT_POST, 'empr_nome', FILTER_SANITIZE_SPECIAL_CHARS);
+$empr_cnpj = filter_input(INPUT_POST, 'empr_cnpj', FILTER_SANITIZE_SPECIAL_CHARS);
+$empr_tipo = filter_input(INPUT_POST, 'empr_tipo', FILTER_SANITIZE_SPECIAL_CHARS);
 $empr_contato_1 = filter_input(INPUT_POST, 'empr_contato_1', FILTER_SANITIZE_SPECIAL_CHARS);
 $empr_contato_2 = filter_input(INPUT_POST, 'empr_contato_2', FILTER_SANITIZE_SPECIAL_CHARS);
 $empr_cidade = filter_input(INPUT_POST, 'empr_cidade', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -15,8 +17,8 @@ if (empty($empr_contato_2)) {
 }
 
 // Query com Prepared Statement usando o placeholder (?)
-$sql = "INSERT INTO empresas (empr_nome, empr_contato_1, empr_contato_2, empr_cidade, empr_endereco) 
-        VALUES (?, ?, ?, ?, ?)";
+$sql = "INSERT INTO empresas (empr_nome, empr_cnpj, empr_tipo, empr_contato_1, empr_contato_2, empr_cidade, empr_endereco) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 try {
     $stmt = $conexao->prepare($sql);
@@ -24,9 +26,11 @@ try {
     // Executa a query passando os valores em um array para o PDO
     $execucao = $stmt->execute([
         $empr_nome, 
-        $empr_contato_1, 
-        $empr_contato_2, 
-        $empr_cidade, 
+        $empr_cnpj, 
+        $empr_tipo,
+        $empr_contato_1,
+        $empr_contato_2,
+        $empr_cidade,
         $empr_endereco
     ]);
     

@@ -64,7 +64,7 @@ $empresa_cidade = h($relatorio['empr_cidade']);
 $curso = h($relatorio['curs_nome']);
 $data_inicio = date('d/m/Y', strtotime(h($relatorio['cntr_data_inicio'])));
 $data_fim = date('d/m/Y', strtotime(h($relatorio['cntr_data_fim']))); // Relatório Final usa a data fim real
-$horario = h($relatorio['cntr_escala_horario']);
+$horario = h($relatorio['cntr_hora_inicio']) . " às " . h($relatorio['cntr_hora_final']);
 
 // Define o título da página (para a aba do navegador)
 $title = "Relatório Final - " . $aluno;

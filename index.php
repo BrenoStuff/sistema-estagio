@@ -206,7 +206,7 @@ require 'components/head.php';
                             <h5 class="text-dark"><i class="fas fa-info-circle me-1"></i> Detalhes do Contrato</h5>
                             <dl class="row small">
                                 <dt class="col-sm-4">Horário:</dt>
-                                <dd class="col-sm-8"><?php echo h($contratoAtivo['cntr_escala_horario']); ?></dd>
+                                <dd class="col-sm-8"><?php echo h($contratoAtivo['cntr_hora_inicio']); ?> às <?php echo h($contratoAtivo['cntr_hora_final']); ?></dd>
                             </dl>
                             <h5 class="text-dark"><i class="fas fa-file-contract me-1"></i> Documentos</h5>
                             <dl class="row small">
