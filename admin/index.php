@@ -300,7 +300,7 @@ function h($str) {
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingAcoes">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAcoes" aria-expanded="false" aria-controls="collapseAcoes">
-                        <i class="fas fa-plus-circle me-2"></i> Cadastros Rápidos (Adicionar)
+                        <i class="fas fa-plus-circle me-2"></i> Cadastros Rápidos
                     </button>
                 </h2>
                 <div id="collapseAcoes" class="accordion-collapse collapse" aria-labelledby="headingAcoes" data-bs-parent="#adminAccordion">
