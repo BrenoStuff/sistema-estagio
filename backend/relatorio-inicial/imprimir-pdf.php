@@ -198,7 +198,6 @@ require_once '../../components/head.php';
 
     .page-footer {
         text-align: center;
-        text-muted: small;
         margin-top: 1.5cm;
         padding-top: 10px;
         border-top: 1px solid #AAA;
@@ -434,10 +433,10 @@ require_once '../../components/head.php';
                         <p class="text-muted fst-italic">Nenhum anexo foi enviado.</p>
                     <?php } else { ?>
                         <?php if (!empty($relatorio['rini_anexo_1'])) { ?>
-                            <p><strong>Anexo 1:</strong> <a href="<?php echo BASE_URL . h($relatorio['rini_anexo_1']); ?>" target="_blank">Visualizar Anexo 1</a></p>
+                            <p><strong>Anexo 1:</strong> <a href="<?php echo BASE_URL . h($relatorio['rini_anexo_1']); ?>" target="_blank">Anexo 1</a></p>
                         <?php } ?>
                         <?php if (!empty($relatorio['rini_anexo_2'])) { ?>
-                            <p><strong>Anexo 2:</strong> <a href="<?php echo BASE_URL . h($relatorio['rini_anexo_2']); ?>" target="_blank">Visualizar Anexo 2</a></p>
+                            <p><strong>Anexo 2:</strong> <a href="<?php echo BASE_URL . h($relatorio['rini_anexo_2']); ?>" target="_blank">Anexo 2</a></p>
                         <?php } ?>
                     <?php } ?>
                 </div>
