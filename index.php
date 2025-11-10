@@ -19,10 +19,12 @@ $relatorioInicial = null;
 $atividadesRelatorioInicial = []; // Usa array vazio para loops foreach
 $relatorioFinal = null;
 $atividadesRelatorioFinal = []; // Usa array vazio para loops foreach
+$admin_contato = null; // **** NOVO ****
 
 // Helper de segurança para prevenir XSS
 function h($str) {
-    return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8');
+    // Adicionado trim() para remover espaços em branco
+    return htmlspecialchars(trim($str ?? ''), ENT_QUOTES, 'UTF-8');
 }
 
 try {
@@ -82,6 +84,14 @@ try {
             $atividadesRelatorioFinal = $stmt_atv_fin->fetchAll();
         }
     }
+
+    // **** NOVO: Buscar contato do Admin ****
+    $sql_admin = "SELECT user_nome, user_contato, user_login FROM usuarios WHERE user_acesso = 'admin' LIMIT 1";
+    $stmt_admin = $conexao->prepare($sql_admin);
+    $stmt_admin->execute();
+    $admin_contato = $stmt_admin->fetch();
+    // **** FIM NOVO ****
+
 } catch (PDOException $e) {
     // Tratamento de erro seguro
     error_log("Erro PDO no Index (Aluno): " . $e->getMessage());
@@ -95,44 +105,77 @@ try {
 require 'components/head.php';
 ?>
 
-<body class="bg-body-tertiary">
+<!-- **** ALTERAÇÃO: Classes para Sticky Footer **** -->
+<body class="d-flex flex-column min-vh-100 bg-body-tertiary">
     <?php require 'components/navbar.php'; ?>
 
-    <div class="container-lg mt-4">
+    <!-- **** ALTERAÇÃO: Wrapper <main> para Sticky Footer **** -->
+    <main class="container-lg mt-4 flex-grow-1">
         
-        <!-- Card de Perfil do Aluno -->
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center">
-                    <div class="me-4">
-                        <i class="fa-solid fa-circle-user fa-7x text-primary"></i>
-                    </div>
-                    <div>
-                        <h1 class="h3 fw-bold mb-0">Bem vindo, <?php echo h($usuario['user_nome']); ?>!</h1>
-                        <p class="text-muted mb-1">Aqui está o resumo do seu perfil e estágio.</p>
-                        <hr class="my-2">
-                        <dl class="row mb-0 small">
-                            <dt class="col-sm-3 col-lg-2">Curso:</dt>
-                            <dd class="col-sm-9 col-lg-10"><?php echo h($usuario['curs_nome']); ?></dd>
+        <!-- **** NOVO: Linha para Perfil e Contato **** -->
+        <div class="row">
+            
+            <!-- Coluna 1: Perfil do Aluno -->
+            <div class="col-lg-7 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="me-4 d-none d-sm-block">
+                                <i class="fa-solid fa-circle-user fa-7x text-primary"></i>
+                            </div>
+                            <div>
+                                <h1 class="h3 fw-bold mb-0">Bem vindo, <?php echo h($usuario['user_nome']); ?>!</h1>
+                                <p class="text-muted mb-1">Aqui está o resumo do seu perfil e estágio.</p>
+                                <hr class="my-2">
+                                <dl class="row mb-0 small">
+                                    <dt class="col-sm-3 col-lg-2">Curso:</dt>
+                                    <dd class="col-sm-9 col-lg-10"><?php echo h($usuario['curs_nome']); ?></dd>
 
-                            <dt class="col-sm-3 col-lg-2">RA:</dt>
-                            <dd class="col-sm-9 col-lg-10"><?php echo h($usuario['user_ra']); ?></dd>
+                                    <dt class="col-sm-3 col-lg-2">RA:</dt>
+                                    <dd class="col-sm-9 col-lg-10"><?php echo h($usuario['user_ra']); ?></dd>
 
-                            <dt class="col-sm-3 col-lg-2">E-mail:</dt>
-                            <dd class="col-sm-9 col-lg-10"><?php echo h($usuario['user_login']); ?></dd>
+                                    <dt class="col-sm-3 col-lg-2">E-mail:</dt>
+                                    <dd class="col-sm-9 col-lg-10"><?php echo h($usuario['user_login']); ?></dd>
 
-                            <dt class="col-sm-3 col-lg-2">Contato:</dt>
-                            <dd class="col-sm-9 col-lg-10"><?php echo h($usuario['user_contato']); ?></dd>
-                        </dl>
+                                    <dt class="col-sm-3 col-lg-2">Contato:</dt>
+                                    <dd class="col-sm-9 col-lg-10"><?php echo h($usuario['user_contato']); ?></dd>
+                                </dl>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Coluna 2: Contato do Admin -->
+            <div class="col-lg-5 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h2 class="h4 fw-bold mb-3"><i class="fas fa-headset me-2 text-primary"></i> Contato da Coordenação</h2>
+                        <?php if ($admin_contato): ?>
+                            <p class="text-muted mb-3 small">Em caso de dúvidas sobre seu contrato ou relatórios, entre em contato:</p>
+                            <dl class="row mb-0 small">
+                                <dt class="col-sm-4">Coordenador(a):</dt>
+                                <dd class="col-sm-8"><?php echo h($admin_contato['user_nome']); ?></dd>
+
+                                <dt class="col-sm-4">E-mail:</dt>
+                                <dd class="col-sm-8"><?php echo h($admin_contato['user_login']); ?></dd>
+
+                                <dt class="col-sm-4">Telefone:</dt>
+                                <dd class="col-sm-8"><?php echo h($admin_contato['user_contato']); ?></dd>
+                            </dl>
+                        <?php else: ?>
+                            <p class="text-danger">Não foi possível carregar as informações de contato do administrador.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- Fim da <div class="row"> -->
+
 
         <!-- Card de Contrato -->
         <?php if ($contratoAtivo == null): ?>
             <!-- Caso NÃO TENHA contrato ativo -->
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body text-center p-5">
                     <i class="fas fa-exclamation-triangle fa-4x text-warning mb-3"></i>
                     <h2 class="h4">Nenhum Contrato Ativo Encontrado</h2>
@@ -206,7 +249,7 @@ require 'components/head.php';
                             <h5 class="text-dark"><i class="fas fa-info-circle me-1"></i> Detalhes do Contrato</h5>
                             <dl class="row small">
                                 <dt class="col-sm-4">Horário:</dt>
-                                <dd class="col-sm-8"><?php echo h($contratoAtivo['cntr_hora_inicio']); ?> às <?php echo h($contratoAtivo['cntr_hora_final']); ?></dd>
+                                <dd class="col-sm-8"><?php echo h($contratoAtivo['cntr_escala_horario']); ?></dd>
                             </dl>
                             <h5 class="text-dark"><i class="fas fa-file-contract me-1"></i> Documentos</h5>
                             <dl class="row small">
@@ -371,7 +414,7 @@ require 'components/head.php';
                 </div>
             </div>
         <?php endif; ?>
-    </div>
+    </main>
 
 
     <!-- **** MODALS **** -->
@@ -450,15 +493,15 @@ require 'components/head.php';
                         <p class="form-text">Se desejável, anexe outros documentos relativos às atividades de estágio ou críticas e sugestões sobre este formulário.</p>
                         <div class="mb-3">
                             <label for="rini_anexo_1" class="form-label">Anexo 1</label>
-                            <input type="file" class="form-control" id="rini_anexo_1" name="rini_anexo_1">
+                            <input type="file" class="form-control" id="rini_anexo_1" name="rini_anexo_1" accept=".pdf">
                         </div>
 
                         <div class="mb-3">
                             <label for="rini_anexo_2" class="form-label">Anexo 2</label>
-                            <input type="file" class="form-control" id="rini_anexo_2" name="rini_anexo_2">
+                            <input type="file" class="form-control" id="rini_anexo_2" name="rini_anexo_2" accept=".pdf">
                         </div>
 
-                        <input type="hidden" name="cntr_id" value="<?php echo $contratoAtivo['cntr_id']; ?>">
+                        <input type="hidden" name="cntr_id" value="<?php echo h($contratoAtivo['cntr_id'] ?? ''); ?>">
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -512,14 +555,14 @@ require 'components/head.php';
                         <p class="form-text">Se desejável, anexe outros documentos relativos às atividades de estágio ou críticas e sugestões sobre este formulário.</p>
                         <div class="mb-3">
                             <label for="rfin_anexo_1" class="form-label">Anexo 1</label>
-                            <input type="file" class="form-control" id="rfin_anexo_1" name="rfin_anexo_1">
+                            <input type="file" class="form-control" id="rfin_anexo_1" name="rfin_anexo_1" accept=".pdf">
                         </div>
                         <div class="mb-3">
                             <label for="rfin_anexo_2" class="form-label">Anexo 2</label>
-                            <input type="file" class="form-control" id="rfin_anexo_2" name="rfin_anexo_2">
+                            <input type="file" class="form-control" id="rfin_anexo_2" name="rfin_anexo_2" accept=".pdf">
                         </div>
 
-                        <input type="hidden" name="cntr_id" value="<?php echo $contratoAtivo['cntr_id']; ?>">
+                        <input type="hidden" name="cntr_id" value="<?php echo h($contratoAtivo['cntr_id'] ?? ''); ?>">
                         
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
