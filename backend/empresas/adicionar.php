@@ -2,7 +2,10 @@
 require_once '../../config.php';
 require_once '../helpers/db-connect.php'; 
 
-// Limpeza e filtragem dos dados de entrada
+// -----------------------------------------------
+//  Coleta e Limpeza dos dados de entrada
+// -----------------------------------------------
+
 $empr_nome = filter_input(INPUT_POST, 'empr_nome', FILTER_SANITIZE_SPECIAL_CHARS);
 $empr_cnpj = filter_input(INPUT_POST, 'empr_cnpj', FILTER_SANITIZE_SPECIAL_CHARS);
 $empr_tipo = filter_input(INPUT_POST, 'empr_tipo', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -16,7 +19,10 @@ if (empty($empr_contato_2)) {
     $empr_contato_2 = null; 
 }
 
-// Query com Prepared Statement usando o placeholder (?)
+// -----------------------------------------------
+//  Inserção no Banco de Dados
+// -----------------------------------------------
+
 $sql = "INSERT INTO empresas (empr_nome, empr_cnpj, empr_tipo, empr_contato_1, empr_contato_2, empr_cidade, empr_endereco) 
         VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -44,7 +50,7 @@ try {
         exit();
     }
 } catch (PDOException $e) {
-    // Tratamento de erro seguro: registra o erro (log) e mostra mensagem genérica
+    // Tratamento de erro
     error_log("Erro PDO ao adicionar empresa: " . $e->getMessage());
     $aviso = "Erro interno ao adicionar empresa. Tente novamente mais tarde.";
     header("location: " . BASE_URL . "error.php?aviso=" . urlencode($aviso));

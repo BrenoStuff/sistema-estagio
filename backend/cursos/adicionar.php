@@ -2,11 +2,15 @@
 require_once '../../config.php';
 require_once '../helpers/db-connect.php'; 
 
-// Limpeza e filtragem dos dados de entrada
-// Sanitiza a string para remover caracteres especiais, prevenindo XSS e injection
+// -----------------------------------------------
+//  Coleta e Limpeza dos dados de entrada
+// -----------------------------------------------
 $curs_nome = filter_input(INPUT_POST, 'curs_nome', FILTER_SANITIZE_SPECIAL_CHARS);
 
-// Query com Prepared Statement usando o placeholder (?)
+// -----------------------------------------------
+//  Inserção no Banco de Dados
+// -----------------------------------------------
+
 $sql = "INSERT INTO cursos (curs_nome) VALUES (?)";
 
 try {
@@ -25,7 +29,7 @@ try {
         exit();
     }
 } catch (PDOException $e) {
-    // Tratamento de erro seguro: registra o erro (log) e mostra mensagem genérica
+    // Tratamento de erro
     error_log("Erro PDO ao adicionar curso: " . $e->getMessage());
     $aviso = "Erro interno ao adicionar curso. Tente novamente mais tarde.";
     header("location: " . BASE_URL . "error.php?aviso=" . urlencode($aviso));

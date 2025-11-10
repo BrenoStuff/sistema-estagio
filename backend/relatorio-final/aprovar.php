@@ -1,12 +1,18 @@
 <?php
 include_once '../../config.php';
-// Requer o arquivo de conexão PDO
 include_once '../helpers/db-connect.php'; 
 
-// Dados recebidos e filtragem de entrada (Segurança)
+// -----------------------------------------------
+//  Coleta e Limpeza dos dados de entrada
+// -----------------------------------------------
+
 $rfin_id = filter_input(INPUT_POST, 'rfin_id', FILTER_VALIDATE_INT);
 
-// Query com Prepared Statement PDO usando o placeholder (?)
+
+// -----------------------------------------------
+//  Atualização no Banco de Dados
+// -----------------------------------------------
+
 $sql = "UPDATE relatorio_final SET rfin_aprovado = 1 WHERE rfin_id = ?";
 
 try {

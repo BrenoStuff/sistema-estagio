@@ -6,8 +6,9 @@ include_once '../helpers/db-connect.php';
 include_once '../helpers/save-file.php';
 
 // ------------------------------------------------------------------
-// 1. Limpeza e filtragem dos dados de entrada (Campos do Legado)
+// Coleta e Limpeza dos Dados de Entrada
 // ------------------------------------------------------------------
+
 $cntr_id = filter_input(INPUT_POST, 'cntr_id', FILTER_VALIDATE_INT);
 $rfin_sintese_empresa = filter_input(INPUT_POST, 'rfin_sintese_empresa', FILTER_SANITIZE_SPECIAL_CHARS);
 
@@ -19,7 +20,7 @@ if (!$cntr_id || !$rfin_sintese_empresa) {
 }
 
 // ------------------------------------------------------------------
-// 2. Lógica de Anexos (File Upload)
+// Lógica de Anexos (File Upload)
 // ------------------------------------------------------------------
 
 // Inicializa variáveis de arquivo
@@ -27,7 +28,6 @@ $rfin_anexo_1 = (isset($_FILES['rfin_anexo_1']) && $_FILES['rfin_anexo_1']['erro
 $rfin_anexo_2 = (isset($_FILES['rfin_anexo_2']) && $_FILES['rfin_anexo_2']['error'] != UPLOAD_ERR_NO_FILE) ? $_FILES['rfin_anexo_2'] : null;
 
 // Diretórios de upload
-// __DIR__ é 'backend/relatorio-final', então '../uploads...' vai para 'backend/uploads/...'
 $upload_dir = __DIR__ . '/../uploads/relatorio-anexos/'; // Caminho absoluto
 $relative_dir = 'backend/uploads/relatorio-anexos/'; // Caminho relativo para o banco de dados
 $relative_dir_safe = rtrim($relative_dir, '/\\') . DIRECTORY_SEPARATOR; // Garante o separador
@@ -60,8 +60,9 @@ if ($rfin_anexo_2 != null) {
 
 
 // ------------------------------------------------------------------
-// 3. Coleta de Atividades (Lógica do Legado)
+// Coleta das Atividades de Estágio Final
 // ------------------------------------------------------------------
+
 $atividades = array();
 $resumos = array();
 $disciplina = array();
@@ -84,14 +85,13 @@ for ($i = 1; $i <= 10; $i++) {
 
 
 // ------------------------------------------------------------------
-// 4. Conexão com Banco de Dados e Transações PDO
+// Conexão com Banco de Dados e Transações PDO
 // ------------------------------------------------------------------
 
 try {
     // Inicia uma transação
     $conexao->beginTransaction(); 
     
-    // A) INSERT na tabela relatorio_final (Usando os campos corretos do legado)
     $sql_rfin = "INSERT INTO relatorio_final (rfin_sintese_empresa, rfin_anexo_1, rfin_anexo_2, rfin_aprovado)
                  VALUES (?, ?, ?, 0)"; // Inicia como não aprovado (0)
     
@@ -105,7 +105,7 @@ try {
     // Obtém o ID do relatório final inserido
     $rfin_id = $conexao->lastInsertId();
 
-    // B) INSERT na tabela atv_estagio_fin (Lógica do legado)
+    // INSERT na tabela atv_estagio_fin
     if (!empty($atividades)) {
         $sql_atv = "INSERT INTO atv_estagio_fin (atvf_atividade, atvf_resumo, atvf_disciplina_relacionada, atvf_id_relatorio_fin) 
                     VALUES (?, ?, ?, ?)";
@@ -119,15 +119,15 @@ try {
         }
     }
 
-    // C) UPDATE na tabela contratos
+    // UPDATE na tabela contratos
     $sql_update = "UPDATE contratos SET cntr_id_relatorio_final = ? WHERE cntr_id = ?";
     $stmt_update = $conexao->prepare($sql_update);
     $stmt_update->execute([$rfin_id, $cntr_id]);
 
-    // D) Confirma a Transação (Aplica as mudanças no banco)
+    // Confirma a Transação (Aplica as mudanças no banco)
     $conexao->commit(); 
 
-    // E) Sucesso: Redireciona
+    // Sucesso: Redireciona
     header("Location: ../../index.php?aviso=Relatório final criado com sucesso!");
     exit();
 

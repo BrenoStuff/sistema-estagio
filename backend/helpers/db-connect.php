@@ -4,6 +4,7 @@ define('DB_NAME', 'sistema-estagio');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 
+// Conexão com o banco de dados usando PDO
 try {
     // String de conexão DSN (Data Source Name)
     $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';

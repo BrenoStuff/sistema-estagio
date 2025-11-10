@@ -6,16 +6,15 @@ require_once '../helpers/db-connect.php';
 $login = filter_input(INPUT_POST, 'login', FILTER_SANITIZE_SPECIAL_CHARS);
 $senha = $_POST['senha']; // Senha bruta para verificação
 
-// 1. Query com Prepared Statement: busca o ID, acesso e o HASH da senha, APENAS usando o login.
 $sql = "SELECT user_id, user_acesso, user_senha FROM usuarios WHERE user_login = ?";
 
 try {
     $stmt = $conexao->prepare($sql);
-    $stmt->execute([$login]); // Passa o login como parâmetro
+    $stmt->execute([$login]);
 
-    $usuario = $stmt->fetch(); // Obtém a linha como array associativo (padrão PDO)
+    $usuario = $stmt->fetch();
 
-    // 2. Verifica se o usuário foi encontrado E se a senha confere com o HASH
+    // Verifica se o usuário foi encontrado E se a senha confere com o HASH
     if ($usuario && password_verify($senha, $usuario['user_senha'])) {
         // Login bem-sucedido
         session_start();

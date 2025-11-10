@@ -2,7 +2,10 @@
 include_once '../../config.php';
 include_once '../helpers/db-connect.php';
 
-// 1. Dados recebidos e filtragem de entrada
+// -----------------------------------------------
+//  Coleta e Limpeza dos dados de entrada
+// -----------------------------------------------
+
 $rfin_id = filter_input(INPUT_POST, 'rfin_id', FILTER_VALIDATE_INT);
 
 if (!$rfin_id) {

@@ -3,6 +3,10 @@ require_once '../../config.php';
 require_once '../helpers/db-connect.php'; 
 require_once '../helpers/save-file.php';
 
+// -----------------------------------------------
+//  Coleta e Limpeza dos dados de entrada
+// -----------------------------------------------
+
 // Limpeza e filtragem dos dados de entrada
 $cntr_id_usuario = filter_input(INPUT_POST, 'cntr_id_usuario', FILTER_VALIDATE_INT);
 $cntr_id_empresa = filter_input(INPUT_POST, 'cntr_id_empresa', FILTER_VALIDATE_INT);
@@ -14,7 +18,9 @@ $cntr_hora_final = filter_input(INPUT_POST, 'cntr_hora_final', FILTER_SANITIZE_S
 $cntr_tipo_estagio = isset($_POST['cntr_tipo_estagio']) ? 1 : 0; 
 $cntr_ativo = isset($_POST['cntr_ativo']) ? 1 : 0;
 
-// --- Lógica de Upload de Arquivos (Aprimorada) ---
+// -----------------------------------------------
+//  Lógica de Upload de Arquivos
+// -----------------------------------------------
 
 // Verifica se existe algum anexo na variavel $_FILES
 if (isset($_FILES['cntr_termo_contrato']) && $_FILES['cntr_termo_contrato']['error'] == UPLOAD_ERR_NO_FILE) {
@@ -32,7 +38,7 @@ if (isset($_FILES['cntr_anexo_extra']) && $_FILES['cntr_anexo_extra']['error'] =
 $upload_dir = __DIR__ . '/../uploads/contratos/'; // Caminho absoluto
 $relative_dir = 'backend/uploads/contratos/'; // Caminho relativo para o banco de dados
 
-// Preparação do caminho relativo seguro (usando a recomendação de boas práticas)
+// Preparação do caminho relativo
 $relative_dir_safe = rtrim($relative_dir, '/\\') . DIRECTORY_SEPARATOR;
 
 $nome_base = 'contrato_';
@@ -58,9 +64,10 @@ if ($cntr_anexo_extra != null) {
     $cntr_anexo_extra = null;
 }
 
-// --- Fim da Lógica de Upload de Arquivos ---
+// -----------------------------------------------
+//  Inserção no Banco de Dados
+// -----------------------------------------------
 
-// Query com Prepared Statement PDO
 $sql = "INSERT INTO contratos (cntr_id_usuario, cntr_id_empresa, cntr_data_inicio, cntr_data_fim, cntr_hora_inicio, cntr_hora_final, cntr_termo_contrato, cntr_anexo_extra, cntr_tipo_estagio, cntr_ativo) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

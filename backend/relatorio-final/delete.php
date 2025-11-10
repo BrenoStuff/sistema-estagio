@@ -2,7 +2,10 @@
 include_once '../../config.php';
 include_once '../helpers/db-connect.php'; 
 
-// 1. Dados recebidos e filtragem de entrada (Segurança)
+// -----------------------------------------------
+//  Coleta e Limpeza dos dados de entrada
+// -----------------------------------------------
+
 $rfin_id = filter_input(INPUT_POST, 'rfin_id', FILTER_VALIDATE_INT);
 $cntr_id = filter_input(INPUT_POST, 'cntr_id', FILTER_VALIDATE_INT);
 
@@ -12,6 +15,10 @@ if (!$rfin_id || !$cntr_id) {
     header("Location: " . BASE_URL . "error.php?aviso=" . urlencode($aviso));
     exit();
 }
+
+// -----------------------------------------------
+//  Exclusão no Banco de Dados com Transação PDO
+// -----------------------------------------------
 
 try {
     // Inicia a Transação PDO

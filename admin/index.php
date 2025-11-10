@@ -2,23 +2,24 @@
 // Configurações da Página
 require '../config.php';
 require '../backend/auth/verifica.php';
-$title = SIS_NAME . ' - Area do Administrador'; // Alterado o título para "Area do Administrador"
+$title = SIS_NAME . ' - Area do Administrador';
 $navActive = 'home';
 
-// Verifica se é admin
-// verifica_acesso('admin');
+// Verifica se o usuário é admin
+if ($_SESSION['acesso'] !== 'admin') {
+    header("Location:" . BASE_URL . "error.php?aviso=" . urlencode("Acesso negado. Área restrita ao administrador."));
+    exit();
+}
 
-// 
-// BANCO DE DADOS (Migrado para PDO)
-//
 require_once '../backend/helpers/db-connect.php';
 
 try {
-    // Usuario (Corrigido SQL Injection)
+    // Usuario 
     $sql = "SELECT user_nome FROM usuarios WHERE user_id = ?";
     $stmt = $conexao->prepare($sql);
     $stmt->execute([$_SESSION['usuario']]);
     $usuario = $stmt->fetch();
+
     if (!$usuario) {
         $usuario = ['user_nome' => 'Desconhecido']; // Fallback
     }

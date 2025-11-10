@@ -5,6 +5,7 @@ $navActive = $navActive ?? '';
 // Verifica o nível de acesso da sessão. O padrão é 'aluno' se não estiver definido.
 // 'verifica.php' deve ter sido incluído ANTES deste arquivo para que $_SESSION['acesso'] exista.
 $user_acesso = $_SESSION['acesso'] ?? 'aluno';
+
 ?>
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm sticky-top">
@@ -61,14 +62,10 @@ $user_acesso = $_SESSION['acesso'] ?? 'aluno';
             </ul>
 
             <!-- Itens de Ação (à direita) -->
-            <!-- d-flex flex-row align-items-center garante o alinhamento correto dos botões -->
             <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
-
-                <!-- Dropdown "Adicionar Novo" FOI REMOVIDO -->
 
                 <!-- Botão Troca de Tema -->
                 <li class="nav-item me-3">
-                    <!-- Usando btn-outline-light para melhor contraste no navbar-dark -->
                     <button type="button" class="btn btn-outline-light btn-sm" id="theme-toggler" title="Alternar Tema">
                         <i class="fas fa-moon"></i>
                     </button>

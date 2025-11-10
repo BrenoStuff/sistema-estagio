@@ -4,10 +4,6 @@ require 'config.php';
 require 'backend/auth/verifica.php';
 $title = SIS_NAME . ' - Area do Aluno';
 $navActive = 'home';
-
-//
-// CÓDIGO DE CONEXÃO COM O BANCO DE DADOS (Migrado para PDO)
-//
 require_once 'backend/helpers/db-connect.php';
 
 $user_id = $_SESSION['usuario'];
@@ -19,16 +15,15 @@ $relatorioInicial = null;
 $atividadesRelatorioInicial = []; // Usa array vazio para loops foreach
 $relatorioFinal = null;
 $atividadesRelatorioFinal = []; // Usa array vazio para loops foreach
-$admin_contato = null; // **** NOVO ****
+$admin_contato = null;
 
 // Helper de segurança para prevenir XSS
 function h($str) {
-    // Adicionado trim() para remover espaços em branco
     return htmlspecialchars(trim($str ?? ''), ENT_QUOTES, 'UTF-8');
 }
 
 try {
-    // Informações do usuário (Corrigido SQL Injection)
+    // Informações do usuário
     $sql_user = "SELECT * FROM usuarios
                  JOIN cursos ON user_id_curs = curs_id
                  WHERE user_id = ?";
@@ -41,7 +36,7 @@ try {
         exit();
     }
 
-    // Informações do contrato ativo do usuário (Corrigido SQL Injection)
+    // Informações do contrato ativo do usuário
     $sql_contrato = "SELECT * FROM contratos
                      JOIN empresas ON cntr_id_empresa = empr_id
                      WHERE cntr_id_usuario = ? AND cntr_ativo = 1 LIMIT 1";
@@ -52,7 +47,7 @@ try {
     // Se um contrato ativo existir, busca os relatórios e atividades
     if ($contratoAtivo) {
         
-        // Informações de relatório inicial (Corrigido SQL Injection)
+        // Informações de relatório inicial 
         if (!empty($contratoAtivo['cntr_id_relatorio_inicial'])) {
             $sql_rini = "SELECT * FROM relatorio_inicial WHERE rini_id = ?";
             $stmt_rini = $conexao->prepare($sql_rini);
@@ -60,7 +55,7 @@ try {
             $relatorioInicial = $stmt_rini->fetch();
         }
 
-        // Atividades do relatório inicial (Corrigido SQL Injection)
+        // Atividades do relatório inicial 
         if ($relatorioInicial) {
             $sql_atv_ini = "SELECT * FROM atv_estagio_ini WHERE atvi_id_relatorio_ini = ?";
             $stmt_atv_ini = $conexao->prepare($sql_atv_ini);
@@ -68,7 +63,7 @@ try {
             $atividadesRelatorioInicial = $stmt_atv_ini->fetchAll();
         }
 
-        // Informações de relatório final (Corrigido SQL Injection)
+        // Informações de relatório final 
         if (!empty($contratoAtivo['cntr_id_relatorio_final'])) {
             $sql_rfin = "SELECT * FROM relatorio_final WHERE rfin_id = ?";
             $stmt_rfin = $conexao->prepare($sql_rfin);
@@ -76,7 +71,7 @@ try {
             $relatorioFinal = $stmt_rfin->fetch();
         }
 
-        // Atividades do relatório final (Corrigido SQL Injection)
+        // Atividades do relatório final 
         if ($relatorioFinal) {
             $sql_atv_fin = "SELECT * FROM atv_estagio_fin WHERE atvf_id_relatorio_fin = ?";
             $stmt_atv_fin = $conexao->prepare($sql_atv_fin);
@@ -85,7 +80,7 @@ try {
         }
     }
 
-    // **** NOVO: Buscar contato do Admin ****
+    // Buscar contato do Admin
     $sql_admin = "SELECT user_nome, user_contato, user_login FROM usuarios WHERE user_acesso = 'admin' LIMIT 1";
     $stmt_admin = $conexao->prepare($sql_admin);
     $stmt_admin->execute();
@@ -105,14 +100,10 @@ try {
 require 'components/head.php';
 ?>
 
-<!-- **** ALTERAÇÃO: Classes para Sticky Footer **** -->
 <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
     <?php require 'components/navbar.php'; ?>
 
-    <!-- **** ALTERAÇÃO: Wrapper <main> para Sticky Footer **** -->
     <main class="container-lg mt-4 flex-grow-1">
-        
-        <!-- **** NOVO: Linha para Perfil e Contato **** -->
         <div class="row">
             
             <!-- Coluna 1: Perfil do Aluno -->
@@ -169,7 +160,7 @@ require 'components/head.php';
                     </div>
                 </div>
             </div>
-        </div> <!-- Fim da <div class="row"> -->
+        </div>
 
 
         <!-- Card de Contrato -->
@@ -199,7 +190,7 @@ require 'components/head.php';
 
                 <div class="card-body p-4">
                     <?php
-                        // Cálculo do percentual de dias restantes (Lógica mantida)
+                        // Cálculo do percentual de dias restantes
                         $dataInicio = new DateTime($contratoAtivo['cntr_data_inicio']);
                         $dataFim = new DateTime($contratoAtivo['cntr_data_fim']);
                         $dataAtual = new DateTime();
@@ -249,7 +240,7 @@ require 'components/head.php';
                             <h5 class="text-dark"><i class="fas fa-info-circle me-1"></i> Detalhes do Contrato</h5>
                             <dl class="row small">
                                 <dt class="col-sm-4">Horário:</dt>
-                                <dd class="col-sm-8"><?php echo h($contratoAtivo['cntr_escala_horario']); ?></dd>
+                                <dd class="col-sm-8"><?php echo h($contratoAtivo['cntr_hora_inicio']); ?> às <?php echo h($contratoAtivo['cntr_hora_final']); ?></dd>
                             </dl>
                             <h5 class="text-dark"><i class="fas fa-file-contract me-1"></i> Documentos</h5>
                             <dl class="row small">
