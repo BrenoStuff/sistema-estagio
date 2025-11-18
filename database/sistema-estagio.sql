@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 30, 2025 at 05:18 AM
+-- Generation Time: Nov 18, 2025 at 12:36 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -60,7 +60,8 @@ CREATE TABLE `atv_estagio_ini` (
 --
 
 INSERT INTO `atv_estagio_ini` (`atvi_id`, `atvi_atividade`, `atvi_comentario`, `atvi_id_relatorio_ini`) VALUES
-(68, 'atv 1', 'comentário foda', 20);
+(68, 'atv 1', 'comentário foda', 20),
+(81, 'Atividade 1', 'Comentário 1', 26);
 
 -- --------------------------------------------------------
 
@@ -84,10 +85,11 @@ CREATE TABLE `contratos` (
   `cntr_id` int(11) NOT NULL,
   `cntr_data_inicio` date NOT NULL,
   `cntr_data_fim` date NOT NULL,
-  `cntr_escala_horario` varchar(127) NOT NULL,
+  `cntr_hora_inicio` time NOT NULL,
+  `cntr_hora_final` time NOT NULL,
   `cntr_termo_contrato` varchar(255) NOT NULL,
   `cntr_anexo_extra` varchar(255) DEFAULT NULL,
-  `cntr_remunerado` tinyint(1) NOT NULL,
+  `cntr_tipo_estagio` varchar(63) NOT NULL,
   `cntr_ativo` tinyint(1) NOT NULL,
   `cntr_id_relatorio_inicial` int(11) DEFAULT NULL,
   `cntr_id_relatorio_final` int(11) DEFAULT NULL,
@@ -99,9 +101,9 @@ CREATE TABLE `contratos` (
 -- Dumping data for table `contratos`
 --
 
-INSERT INTO `contratos` (`cntr_id`, `cntr_data_inicio`, `cntr_data_fim`, `cntr_escala_horario`, `cntr_termo_contrato`, `cntr_anexo_extra`, `cntr_remunerado`, `cntr_ativo`, `cntr_id_relatorio_inicial`, `cntr_id_relatorio_final`, `cntr_id_empresa`, `cntr_id_usuario`) VALUES
-(1, '2025-03-01', '2025-07-18', '12h às 18h', 'link contrato', 'link anexo', 1, 1, 20, 13, 1, 1),
-(2, '2025-05-19', '2025-10-30', '12h às 18h', 'backend/uploads/contratos/contrato_termo_4_1748574857_6018.pdf', NULL, 1, 1, NULL, NULL, 2, 4);
+INSERT INTO `contratos` (`cntr_id`, `cntr_data_inicio`, `cntr_data_fim`, `cntr_hora_inicio`, `cntr_hora_final`, `cntr_termo_contrato`, `cntr_anexo_extra`, `cntr_tipo_estagio`, `cntr_ativo`, `cntr_id_relatorio_inicial`, `cntr_id_relatorio_final`, `cntr_id_empresa`, `cntr_id_usuario`) VALUES
+(1, '2025-03-01', '2025-07-18', '12:00:00', '18:00:00', 'link contrato', 'link anexo', '1', 1, 20, 13, 1, 1),
+(2, '2025-05-19', '2025-10-30', '12:00:00', '18:00:00', 'backend/uploads/contratos/contrato_termo_4_1748574857_6018.pdf', NULL, '1', 1, 26, NULL, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -120,7 +122,8 @@ CREATE TABLE `cursos` (
 
 INSERT INTO `cursos` (`curs_id`, `curs_nome`) VALUES
 (1, 'GESTÃO DE TI'),
-(2, 'ADS');
+(2, 'ADS'),
+(3, 'Marketing');
 
 -- --------------------------------------------------------
 
@@ -131,6 +134,8 @@ INSERT INTO `cursos` (`curs_id`, `curs_nome`) VALUES
 CREATE TABLE `empresas` (
   `empr_id` int(11) NOT NULL,
   `empr_nome` varchar(255) NOT NULL,
+  `empr_cnpj` int(14) NOT NULL,
+  `empr_tipo` varchar(31) NOT NULL,
   `empr_contato_1` varchar(127) NOT NULL,
   `empr_contato_2` varchar(127) DEFAULT NULL,
   `empr_cidade` varchar(127) NOT NULL,
@@ -141,9 +146,9 @@ CREATE TABLE `empresas` (
 -- Dumping data for table `empresas`
 --
 
-INSERT INTO `empresas` (`empr_id`, `empr_nome`, `empr_contato_1`, `empr_contato_2`, `empr_cidade`, `empr_endereco`) VALUES
-(1, 'Jesmine Cook\'s', '(12) 9999-9999', NULL, 'Caraguatatuba - SP', 'Rua dos João, nº 88'),
-(2, 'Jerry Uncook\'s', '12032-23039', 'jerry@gmail.com', 'São Sebastião', 'Rua Joaninha, nº 98');
+INSERT INTO `empresas` (`empr_id`, `empr_nome`, `empr_cnpj`, `empr_tipo`, `empr_contato_1`, `empr_contato_2`, `empr_cidade`, `empr_endereco`) VALUES
+(1, 'Jesmine Cook\'s', 0, '', '(12) 9999-9999', NULL, 'Caraguatatuba - SP', 'Rua dos João, nº 88'),
+(2, 'Jerry Uncook\'s', 0, '', '12032-23039', 'jerry@gmail.com', 'São Sebastião', 'Rua Joaninha, nº 98');
 
 -- --------------------------------------------------------
 
@@ -184,7 +189,7 @@ CREATE TABLE `relatorio_inicial` (
   `rini_comentarios` varchar(1023) DEFAULT NULL,
   `rini_anexo_1` varchar(255) DEFAULT NULL,
   `rini_anexo_2` varchar(255) DEFAULT NULL,
-  `rini_assinatura` varchar(255) NOT NULL,
+  `rini_assinatura` varchar(255) DEFAULT NULL,
   `rini_aprovado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -193,7 +198,8 @@ CREATE TABLE `relatorio_inicial` (
 --
 
 INSERT INTO `relatorio_inicial` (`rini_id`, `rini_como_ocorreu`, `rini_dev_cronograma`, `rini_preparacao_inicio`, `rini_dificul_encontradas`, `rini_aplic_conhecimento`, `rini_novas_ferramentas`, `rini_comentarios`, `rini_anexo_1`, `rini_anexo_2`, `rini_assinatura`, `rini_aprovado`) VALUES
-(20, 'Discorra sobre a forma como ocorreu a sua contratação:', 'Comente sobre o desenvolvimento de seu cronograma de estágio:', 'Discorra sobre como foi sua preparação para o início do estágio:', 'Discorra sobre as dificuldades encontradas no desenvolvimento e como foram solucionadas:', 'Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:', 'Houve contato com novas ferramentas, técnicas e/ou métodos, diferentes dos aprendidos durante o curso? Em caso positivo, cite-os e comente-os:', 'Outros comentários desejáveis:', '', '', 'backend/uploads/relatorio-inicial/relatorio_assinado_20_user_1_1748347602_5376.pdf', 1);
+(20, 'Discorra sobre a forma como ocorreu a sua contratação:', 'Comente sobre o desenvolvimento de seu cronograma de estágio:', 'Discorra sobre como foi sua preparação para o início do estágio:', 'Discorra sobre as dificuldades encontradas no desenvolvimento e como foram solucionadas:', 'Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:', 'Houve contato com novas ferramentas, técnicas e/ou métodos, diferentes dos aprendidos durante o curso? Em caso positivo, cite-os e comente-os:', 'Outros comentários desejáveis:', '', '', 'backend/uploads/relatorio-inicial/relatorio_assinado_20_user_1_1748347602_5376.pdf', 1),
+(26, 'Discorra sobre a forma como ocorreu a sua contratação:oi', 'Comente sobre o desenvolvimento de seu cronograma de estágio:', 'Discorra sobre como foi sua preparação para o início do estágio:', 'Discorra sobre as dificuldades encontradas no desenvolvimento e como foram solucionadas:', 'Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com ela', 'Houve contato com novas ferramentas, técnicas e/ou métodos, diferentes dos aprendidos durante o curso? Em caso positivo, cite-os e comente-os:', 'Outros comentários desejáveis:', 'backend/uploads/relatorio-anexos\\relatorio_anexo__1_2_1762723171_9738.pdf', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -217,9 +223,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`user_id`, `user_ra`, `user_login`, `user_senha`, `user_nome`, `user_contato`, `user_acesso`, `user_id_curs`) VALUES
-(1, 123, 'user', 'user', 'Usuarinio da Silva', '(12) 99730-0000', 'aluno', 1),
-(3, NULL, 'admin', 'admin', 'Adiminio da Silva', '(12) admin-admin', 'admin', NULL),
-(4, 12322222, 'user2', 'user2', 'Usuario dois', '222-2222', 'aluno', 2);
+(1, 123, 'user', '$2y$10$HP9cYLqpBikz6OoTFb46Cu7F9JYirfJ8aSU7T1QMXSsv4V1ezb8Xm', 'Usuarinio da Silva', '(12) 99730-0000', 'aluno', 1),
+(3, NULL, 'admin', '$2y$10$HKX2BBMEMC0Lk99n/WTbG.Ra7VUuDNMBhUDmTqnfv1/LSYlOHlhAO', 'Adiminio da Silva', '(12) admin-admin', 'admin', NULL),
+(4, 12322222, 'user2', '$2y$10$L2a2R2k4gs4NVu8qLdDquuXUan0VKv8XVE0bMe/pCiLHn1zpHuAJC', 'Usuario dois', '222-2222', 'aluno', 2);
 
 --
 -- Indexes for dumped tables
@@ -295,13 +301,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT for table `atv_estagio_fin`
 --
 ALTER TABLE `atv_estagio_fin`
-  MODIFY `atvf_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `atvf_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `atv_estagio_ini`
 --
 ALTER TABLE `atv_estagio_ini`
-  MODIFY `atvi_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `atvi_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT for table `ausencias`
@@ -319,7 +325,7 @@ ALTER TABLE `contratos`
 -- AUTO_INCREMENT for table `cursos`
 --
 ALTER TABLE `cursos`
-  MODIFY `curs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `curs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `empresas`
@@ -331,13 +337,13 @@ ALTER TABLE `empresas`
 -- AUTO_INCREMENT for table `relatorio_final`
 --
 ALTER TABLE `relatorio_final`
-  MODIFY `rfin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `rfin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `relatorio_inicial`
 --
 ALTER TABLE `relatorio_inicial`
-  MODIFY `rini_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `rini_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
