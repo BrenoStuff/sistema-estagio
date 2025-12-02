@@ -261,7 +261,7 @@ require 'components/head.php';
                     <h4 class="mb-3"><i class="fas fa-folder-open me-1"></i> Meus Relatórios</h4>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <!-- Acordeão Relatório INICIAL -->
+                            <!-- Accordion Relatório INICIAL -->
                             <div class="accordion" id="accordionRelatorioInicial">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="headingRelatorioInicial">
@@ -327,7 +327,7 @@ require 'components/head.php';
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <!-- Acordeão Relatório FINAL -->
+                            <!-- Accordion Relatório FINAL -->
                             <div class="accordion" id="accordionRelatorioFinal">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="headingRelatorioFinal">

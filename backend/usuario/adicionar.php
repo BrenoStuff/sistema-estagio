@@ -3,7 +3,7 @@ require_once '../../config.php';
 include_once '../helpers/db-connect.php';
 
 // ------------------------------------------------------------------
-// 1. Limpeza e filtragem dos dados de entrada
+// Limpeza e filtragem dos dados de entrada
 // ------------------------------------------------------------------
 $user_nome = filter_input(INPUT_POST, 'user_nome', FILTER_SANITIZE_SPECIAL_CHARS);
 $user_login = filter_input(INPUT_POST, 'user_login', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -14,16 +14,16 @@ $user_contato = filter_input(INPUT_POST, 'user_contato', FILTER_SANITIZE_SPECIAL
 $user_tipo = "aluno"; // Tipo padrão para novos usuários
 
 // ------------------------------------------------------------------
-// 2. Segurança de Senha (CRÍTICO)
+// Segurança de Senha
 // ------------------------------------------------------------------
+
 // Gera o hash seguro da senha. Nunca salve a senha bruta ($user_senha_raw).
 $user_senha_hash = password_hash($user_senha_raw, PASSWORD_DEFAULT);
 
 // ------------------------------------------------------------------
-// 3. Conexão com Banco de Dados e Transações PDO
+// Conexão com Banco de Dados e Transações PDO
 // ------------------------------------------------------------------
 
-// Query com Prepared Statement usando placeholders '?'
 $sql = "INSERT INTO usuarios (user_nome, user_login, user_senha, user_id_curs, user_ra, user_contato, user_acesso) 
         VALUES (?, ?, ?, ?, ?, ?, ?)";
 

@@ -33,7 +33,7 @@ $user_acesso = $_SESSION['acesso'] ?? 'aluno';
         <!-- Conteúdo Colapsável -->
         <div class="collapse navbar-collapse" id="navbarNav">
 
-            <!-- Links Principais (à esquerda) -->
+            <!-- Links Principais (esquerda) -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <?php if ($user_acesso == 'admin'): ?>
                     <!-- Link Admin -->
@@ -50,18 +50,9 @@ $user_acesso = $_SESSION['acesso'] ?? 'aluno';
                         </a>
                     </li>
                 <?php endif; ?>
-                
-                <!-- 
-                Você pode adicionar mais links universais ou específicos aqui, ex:
-                <li class="nav-item">
-                    <a class="nav-link" href="<?php echo BASE_URL; ?>documentos.php">
-                        <i class="fas fa-fw fa-file-alt"></i> Documentos
-                    </a>
-                </li>
-                -->
             </ul>
 
-            <!-- Itens de Ação (à direita) -->
+            <!-- Itens de Ação (direita) -->
             <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
 
                 <!-- Botão Troca de Tema -->
