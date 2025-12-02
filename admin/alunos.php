@@ -38,9 +38,10 @@ function h($str) { return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8'); }
                 <h1 class="h3 text-gray-800"><i class="fas fa-user-graduate"></i> Gestão de Alunos</h1>
                 <p class="text-muted mb-0">Administre o cadastro acadêmico dos estagiários.</p>
             </div>
-            <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addAlunoModal">
-                <i class="fas fa-user-plus fa-sm text-white-50 me-2"></i>Novo Aluno
-            </button>
+            <div>
+                <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addAlunoModal"><i class="fas fa-user-plus fa-sm text-white-50 me-2"></i>Novo Aluno</button>
+                <a href="../backend/exportar.php?tipo=alunos_ativos" class="btn btn-success shadow-sm me-2"><i class="fas fa-file-excel fa-sm text-white-50 me-2"></i>Exportar Excel</a>
+            </div>
         </div>
 
         <div class="card shadow mb-4">

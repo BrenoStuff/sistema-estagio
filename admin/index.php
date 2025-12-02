@@ -267,6 +267,15 @@ function h($str) {
         </div>
     </div>
 
+    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-download me-2"></i>Relatórios</button>
+                        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <li><a class="dropdown-item" href="../backend/exportar.php?tipo=alunos_ativos"><i class="fas fa-user-clock me-2 text-primary"></i>Alunos Ativos (Estagiando)</a></li>
+                            <li><a class="dropdown-item" href="../backend/exportar.php?tipo=contratos_geral"><i class="fas fa-table me-2 text-secondary"></i>Todos os Contratos</a></li>
+                            <li><a class="dropdown-item" href="../backend/exportar.php?tipo=empresas"><i class="fas fa-building me-2 text-info"></i>Lista de Empresas</a></li>
+                        </ul>
+                    </div>
+
     <?php require '../components/footer.php'; ?>
 
 </body>

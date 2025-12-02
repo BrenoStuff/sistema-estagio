@@ -30,9 +30,10 @@ function h($str) { return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8'); }
                 <h1 class="h3 text-gray-800"><i class="fas fa-building"></i> Gestão de Empresas</h1>
                 <p class="text-muted mb-0">Cadastre e gerencie as empresas parceiras.</p>
             </div>
-            <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addEmpresaModal">
-                <i class="fas fa-plus fa-sm text-white-50 me-2"></i>Nova Empresa
-            </button>
+            <div>
+                <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addEmpresaModal"><i class="fas fa-plus fa-sm text-white-50 me-2"></i>Nova Empresa</button>
+                <a href="../backend/exportar.php?tipo=empresas" class="btn btn-success shadow-sm me-2"><i class="fas fa-file-excel fa-sm text-white-50 me-2"></i>Exportar Excel</a>
+            </div>
         </div>
 
         <div class="card shadow mb-4">

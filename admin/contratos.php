@@ -42,9 +42,10 @@ function h($str) { return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8'); }
                 <h1 class="h3 text-gray-800"><i class="fas fa-file-contract"></i> Gestão de Contratos</h1>
                 <p class="text-muted mb-0">Gerencie, edite e acompanhe todos os estágios.</p>
             </div>
-            <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addContratoModal">
-                <i class="fas fa-plus fa-sm text-white-50 me-2"></i>Novo Contrato
-            </button>
+            <div>
+                <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addContratoModal"><i class="fas fa-plus fa-sm text-white-50 me-2"></i>Novo Contrato</button>
+                <a href="../backend/exportar.php?tipo=contratos_geral" class="btn btn-success shadow-sm me-2"><i class="fas fa-file-excel fa-sm text-white-50 me-2"></i>Exportar Excel</a>
+            </div>
         </div>
 
         <div class="card shadow mb-4">
