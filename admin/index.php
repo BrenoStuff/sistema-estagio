@@ -336,13 +336,19 @@ function h($str) {
                         <i class="fas fa-table me-2"></i> Visão Geral dos Contratos
                     </button>
                 </h2>
+
+                
                 <div id="collapseContratos" class="accordion-collapse collapse show" aria-labelledby="headingContratos" data-bs-parent="#adminAccordion">
                     <div class="accordion-body">
                         <div class="row">
                             <div class="col-md-12 mb-4">
                                 <div class="card shadow-sm">
-                                    <div class="card-header py-3">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
                                         <h2 class="h5 m-0 font-weight-bold text-primary"><i class="fas fa-table"></i> Todos os Contratos</h2>
+                                        <div class="input-group" style="width: 300px;">
+                                            <input type="text" id="filtroContratos" class="form-control form-control-sm" placeholder="Buscar aluno, empresa ou curso...">
+                                            <span class="input-group-text bg-primary text-white"><i class="fas fa-search"></i></span>
+                                        </div>
                                     </div>
                                     <div class="card-body">
                                         <?php if (count($tabela_tudo) > 0) { ?>
@@ -374,6 +380,19 @@ function h($str) {
                                                                     <span class="badge <?php echo $badge_class; ?>"><?php echo $badge_text; ?></span>
                                                                 </td>
                                                                 <td>
+                                                                    <button type="button" class="btn btn-sm btn-warning text-dark ms-1" 
+                                                                        data-bs-toggle="modal" 
+                                                                        data-bs-target="#editContratoModal"
+                                                                        data-bs-id="<?php echo h($row['cntr_id']); ?>"
+                                                                        data-bs-inicio="<?php echo h($row['cntr_data_inicio']); ?>"
+                                                                        data-bs-fim="<?php echo h($row['cntr_data_fim']); ?>"
+                                                                        data-bs-hinicio="<?php echo h($row['cntr_hora_inicio']); ?>"
+                                                                        data-bs-hfim="<?php echo h($row['cntr_hora_final']); ?>"
+                                                                        data-bs-ativo="<?php echo h($row['cntr_ativo']); ?>"
+                                                                        data-bs-tipo="<?php echo h($row['cntr_tipo_estagio']); ?>"
+                                                                    >
+                                                                        <i class="fas fa-edit"></i> Editar
+                                                                    </button>
                                                                     <button type="button" class="btn btn-sm btn-info" 
                                                                         data-bs-toggle="modal" 
                                                                         data-bs-target="#contratoDetalhesModal"
@@ -717,6 +736,65 @@ function h($str) {
         </div>
     </div>
 
+    <div class="modal fade" id="editContratoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title text-dark">Editar Contrato #<span id="edit-id-display"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="../backend/contratos/update.php" method="POST">
+                        <input type="hidden" name="cntr_id" id="edit-cntr-id">
+                        
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Data Início</label>
+                                <input type="date" name="cntr_data_inicio" id="edit-inicio" class="form-control" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Data Fim</label>
+                                <input type="date" name="cntr_data_fim" id="edit-fim" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Hora Início</label>
+                                <input type="time" name="cntr_hora_inicio" id="edit-hinicio" class="form-control" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Hora Fim</label>
+                                <input type="time" name="cntr_hora_final" id="edit-hfim" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remunerado?</label>
+                            <select name="cntr_tipo_estagio" id="edit-tipo" class="form-select">
+                                <option value="1">Sim</option>
+                                <option value="0">Não</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Status do Contrato</label>
+                            <select name="cntr_ativo" id="edit-ativo" class="form-select">
+                                <option value="1">Ativo (Em andamento)</option>
+                                <option value="0">Finalizado / Inativo</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer px-0 pb-0">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-warning">Salvar Alterações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="contratoDetalhesModal" tabindex="-1" aria-labelledby="contratoDetalhesModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -806,67 +884,114 @@ function h($str) {
     <?php require '../components/footer.php'; ?>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var contratoModal = document.getElementById('contratoDetalhesModal');
-        
-        contratoModal.addEventListener('show.bs.modal', function (event) {
-            // Botão que acionou o modal
+        // Lógica para Filtragem na Tabela
+        document.getElementById('filtroContratos').addEventListener('keyup', function() {
+            var termo = this.value.toLowerCase();
+            var linhas = document.querySelectorAll('table tbody tr');
+
+            linhas.forEach(function(linha) {
+                var textoLinha = linha.textContent.toLowerCase();
+                if(textoLinha.includes(termo)) {
+                    linha.style.display = '';
+                } else {
+                    linha.style.display = 'none';
+                }
+            });
+        });
+
+        // Lógica para Preencher o Modal de Edição
+        var editModal = document.getElementById('editContratoModal');
+        editModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             
-            // Extrair dados dos atributos data-bs-*
+            // Pega dados
             var id = button.getAttribute('data-bs-id');
-            var alunoNome = button.getAttribute('data-bs-aluno-nome');
-            var alunoRa = button.getAttribute('data-bs-aluno-ra');
-            var alunoContato = button.getAttribute('data-bs-aluno-contato');
-            var cursoNome = button.getAttribute('data-bs-curso-nome');
-            var empresaNome = button.getAttribute('data-bs-empresa-nome');
-            var empresaContato = button.getAttribute('data-bs-empresa-contato');
-            var empresaCidade = button.getAttribute('data-bs-empresa-cidade');
-            var empresaEndereco = button.getAttribute('data-bs-empresa-endereco');
-            var dataInicio = button.getAttribute('data-bs-data-inicio');
-            var dataFim = button.getAttribute('data-bs-data-fim');
-            var horario = button.getAttribute('data-bs-horario');
-            var remunerado = button.getAttribute('data-bs-remunerado');
-            var status = button.getAttribute('data-bs-status');
-            var linkTermo = button.getAttribute('data-bs-link-termo');
-            var linkAnexo = button.getAttribute('data-bs-link-anexo');
+            var inicio = button.getAttribute('data-bs-inicio');
+            var fim = button.getAttribute('data-bs-fim');
+            var hinicio = button.getAttribute('data-bs-hinicio');
+            var hfim = button.getAttribute('data-bs-hfim');
+            var ativo = button.getAttribute('data-bs-ativo');
+            var tipo = button.getAttribute('data-bs-tipo');
 
-            // Atualizar o conteúdo do modal
-            contratoModal.querySelector('#modal-contrato-id').textContent = id;
-            
-            // Aluno
-            contratoModal.querySelector('#modal-aluno-nome').textContent = alunoNome;
-            contratoModal.querySelector('#modal-aluno-ra').textContent = alunoRa;
-            contratoModal.querySelector('#modal-aluno-contato').textContent = alunoContato;
-            contratoModal.querySelector('#modal-curso-nome').textContent = cursoNome;
-            
-            // Empresa
-            contratoModal.querySelector('#modal-empresa-nome').textContent = empresaNome;
-            contratoModal.querySelector('#modal-empresa-contato').textContent = empresaContato;
-            contratoModal.querySelector('#modal-empresa-cidade').textContent = empresaCidade;
-            contratoModal.querySelector('#modal-empresa-endereco').textContent = empresaEndereco;
-            
-            // Contrato
-            contratoModal.querySelector('#modal-data-inicio').textContent = dataInicio;
-            contratoModal.querySelector('#modal-data-fim').textContent = dataFim;
-            contratoModal.querySelector('#modal-horario').textContent = horario;
-            contratoModal.querySelector('#modal-status').textContent = status;
-            contratoModal.querySelector('#modal-remunerado').textContent = remunerado;
-            
-            // Links
-            contratoModal.querySelector('#modal-link-termo').href = linkTermo;
-            
-            var anexoItem = contratoModal.querySelector('#modal-anexo-item');
-            var anexoLink = contratoModal.querySelector('#modal-link-anexo');
-            
-            if (linkAnexo) {
-                anexoLink.href = linkAnexo;
-                anexoItem.style.display = 'block'; // Mostra o item
-            } else {
-                anexoItem.style.display = 'none'; // Esconde o item se não houver anexo
-            }
+            // Preenche campos
+            editModal.querySelector('#edit-cntr-id').value = id;
+            editModal.querySelector('#edit-id-display').textContent = id;
+            editModal.querySelector('#edit-inicio').value = inicio;
+            editModal.querySelector('#edit-fim').value = fim;
+            editModal.querySelector('#edit-hinicio').value = hinicio;
+            editModal.querySelector('#edit-hfim').value = hfim;
+            editModal.querySelector('#edit-ativo').value = ativo; // 1 ou 0
+            editModal.querySelector('#edit-tipo').value = tipo;   // 1 ou 0
         });
-    });
+
+        // Lógica para Preencher o Modal de Detalhes
+        document.addEventListener('DOMContentLoaded', function () {
+            var contratoModal = document.getElementById('contratoDetalhesModal');
+            
+            contratoModal.addEventListener('show.bs.modal', function (event) {
+                // Botão que acionou o modal
+                var button = event.relatedTarget;
+                
+                // Extrair dados dos atributos data-bs-*
+                var id = button.getAttribute('data-bs-id');
+                var alunoNome = button.getAttribute('data-bs-aluno-nome');
+                var alunoRa = button.getAttribute('data-bs-aluno-ra');
+                var alunoContato = button.getAttribute('data-bs-aluno-contato');
+                var cursoNome = button.getAttribute('data-bs-curso-nome');
+                var empresaNome = button.getAttribute('data-bs-empresa-nome');
+                var empresaContato = button.getAttribute('data-bs-empresa-contato');
+                var empresaCidade = button.getAttribute('data-bs-empresa-cidade');
+                var empresaEndereco = button.getAttribute('data-bs-empresa-endereco');
+                var dataInicio = button.getAttribute('data-bs-data-inicio');
+                var dataFim = button.getAttribute('data-bs-data-fim');
+                var horario = button.getAttribute('data-bs-horario');
+                var remunerado = button.getAttribute('data-bs-remunerado');
+                var status = button.getAttribute('data-bs-status');
+                var linkTermo = button.getAttribute('data-bs-link-termo');
+                var linkAnexo = button.getAttribute('data-bs-link-anexo');
+
+                // Atualizar o conteúdo do modal
+                contratoModal.querySelector('#modal-contrato-id').textContent = id;
+                
+                // Aluno
+                contratoModal.querySelector('#modal-aluno-nome').textContent = alunoNome;
+                contratoModal.querySelector('#modal-aluno-ra').textContent = alunoRa;
+                contratoModal.querySelector('#modal-aluno-contato').textContent = alunoContato;
+                contratoModal.querySelector('#modal-curso-nome').textContent = cursoNome;
+                
+                // Empresa
+                contratoModal.querySelector('#modal-empresa-nome').textContent = empresaNome;
+                contratoModal.querySelector('#modal-empresa-contato').textContent = empresaContato;
+                contratoModal.querySelector('#modal-empresa-cidade').textContent = empresaCidade;
+                contratoModal.querySelector('#modal-empresa-endereco').textContent = empresaEndereco;
+                
+                // Contrato
+                contratoModal.querySelector('#modal-data-inicio').textContent = dataInicio;
+                contratoModal.querySelector('#modal-data-fim').textContent = dataFim;
+                contratoModal.querySelector('#modal-horario').textContent = horario;
+                contratoModal.querySelector('#modal-status').textContent = status;
+                contratoModal.querySelector('#modal-remunerado').textContent = remunerado;
+                
+                // Links
+                contratoModal.querySelector('#modal-link-termo').href = linkTermo;
+                
+                var anexoItem = contratoModal.querySelector('#modal-anexo-item');
+                var anexoLink = contratoModal.querySelector('#modal-link-anexo');
+                
+                if (linkAnexo) {
+                    anexoLink.href = linkAnexo;
+                    anexoItem.style.display = 'block'; // Mostra o item
+                } else {
+                    anexoItem.style.display = 'none'; // Esconde o item se não houver anexo
+                }
+            });
+        });
+    </script>
+
+
+
+    <script>
+
     </script>
 
 </body>
