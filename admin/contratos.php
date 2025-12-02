@@ -49,7 +49,7 @@ function h($str) { return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8'); }
         </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3 bg-white">
+            <div class="card-header py-3 bg-body-tertiary">
                 <div class="row align-items-center">
                     <div class="col-md-3">
                         <label class="small font-weight-bold text-secondary">Filtrar por Status:</label>
@@ -79,7 +79,7 @@ function h($str) { return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8'); }
 
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered align-middle" id="tabelaContratos">
-                        <thead class="table-light">
+                        <thead class="table-secondary">
                             <tr>
                                 <th>#ID</th>
                                 <th>Aluno</th>

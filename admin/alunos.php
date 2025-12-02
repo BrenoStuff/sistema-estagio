@@ -45,7 +45,7 @@ function h($str) { return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8'); }
         </div>
 
         <div class="card shadow mb-4">
-            <div class="card-header py-3 bg-white d-flex align-items-center justify-content-between">
+            <div class="card-header py-3 bg-body-tertiary d-flex align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Alunos Cadastrados</h6>
                 <div class="input-group" style="width: 300px;">
                     <input type="text" id="campoBusca" class="form-control form-control-sm" placeholder="Buscar por nome, RA ou curso...">
@@ -71,7 +71,7 @@ function h($str) { return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8'); }
 
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered align-middle" id="tabelaAlunos">
-                        <thead class="table-light">
+                        <thead class="table-secondary">
                             <tr>
                                 <th style="width: 10%;">RA</th>
                                 <th>Nome Completo</th>
