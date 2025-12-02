@@ -1,7 +1,7 @@
 <?php
 include_once '../../config.php';
-// Requer o arquivo de conexão PDO
-include_once '../helpers/db-connect.php'; 
+include_once '../helpers/db-connect.php';
+include_once '../helpers/notificacoes.php';
 
 // Dados recebidos e filtragem de entrada (Segurança)
 $rfin_id = filter_input(INPUT_POST, 'rfin_id', FILTER_VALIDATE_INT);
@@ -22,6 +22,11 @@ try {
     
     if ($execucao) {
         // Sucesso
+        $sql = "SELECT cntr_id_usuario FROM contratos WHERE cntr_id_relatorio_final = ?";
+        $stmt = $conexao->prepare($sql);
+        $stmt->execute([$rfin_id]);
+        $user = $stmt->fetch();
+        novaNotificacao($conexao, $user['cntr_id_usuario'], "Relatório Final Reprovado", "Seu relatório final foi reprovado. Por favor, faça as correções necessárias e envie novamente.", "index.php");
         header("location: " . BASE_URL . "admin");
         exit();
     } else {

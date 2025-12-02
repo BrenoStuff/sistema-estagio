@@ -4,5 +4,5 @@
     </div>
 </footer>
 
-<script src="<?php echo BASE_URL; ?>js/bootstrap.js"></script>
+<script src="<?php echo BASE_URL; ?>js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo BASE_URL; ?>js/myScripts.js"></script>

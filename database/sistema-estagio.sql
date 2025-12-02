@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 18, 2025 at 12:36 PM
+-- Generation Time: Dec 02, 2025 at 03:55 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,8 @@ CREATE TABLE `atv_estagio_fin` (
 --
 
 INSERT INTO `atv_estagio_fin` (`atvf_id`, `atvf_atividade`, `atvf_resumo`, `atvf_disciplina_relacionada`, `atvf_id_relatorio_fin`) VALUES
-(17, 'sad', 's', 'ad', 13);
+(17, 'sad', 's', 'ad', 13),
+(24, 'sda', 'sad', 'sad', 17);
 
 -- --------------------------------------------------------
 
@@ -103,7 +104,7 @@ CREATE TABLE `contratos` (
 
 INSERT INTO `contratos` (`cntr_id`, `cntr_data_inicio`, `cntr_data_fim`, `cntr_hora_inicio`, `cntr_hora_final`, `cntr_termo_contrato`, `cntr_anexo_extra`, `cntr_tipo_estagio`, `cntr_ativo`, `cntr_id_relatorio_inicial`, `cntr_id_relatorio_final`, `cntr_id_empresa`, `cntr_id_usuario`) VALUES
 (1, '2025-03-01', '2025-07-18', '12:00:00', '18:00:00', 'link contrato', 'link anexo', '1', 1, 20, 13, 1, 1),
-(2, '2025-05-19', '2025-10-30', '12:00:00', '18:00:00', 'backend/uploads/contratos/contrato_termo_4_1748574857_6018.pdf', NULL, '1', 1, 26, NULL, 2, 4);
+(2, '2025-05-19', '2025-10-30', '12:00:00', '18:00:00', 'backend/uploads/contratos/contrato_termo_4_1748574857_6018.pdf', NULL, '1', 1, 26, 17, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -147,8 +148,35 @@ CREATE TABLE `empresas` (
 --
 
 INSERT INTO `empresas` (`empr_id`, `empr_nome`, `empr_cnpj`, `empr_tipo`, `empr_contato_1`, `empr_contato_2`, `empr_cidade`, `empr_endereco`) VALUES
-(1, 'Jesmine Cook\'s', 0, '', '(12) 9999-9999', NULL, 'Caraguatatuba - SP', 'Rua dos João, nº 88'),
-(2, 'Jerry Uncook\'s', 0, '', '12032-23039', 'jerry@gmail.com', 'São Sebastião', 'Rua Joaninha, nº 98');
+(1, 'Jesmine Cook\'s', 2147483647, 'ONG', '(12) 9999-9999', '', 'Caraguatatuba - SP', 'Rua dos João, nº 88'),
+(2, 'Jerry Uncook', 265556532, 'Privada', '12032-23039', 'jerry@gmail.com', 'São Sebastião', 'Rua Joaninha, nº 98');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notificacoes`
+--
+
+CREATE TABLE `notificacoes` (
+  `not_id` int(11) NOT NULL,
+  `not_user_id` int(11) NOT NULL,
+  `not_titulo` varchar(255) NOT NULL,
+  `not_mensagem` text NOT NULL,
+  `not_link` varchar(255) DEFAULT NULL,
+  `not_lida` tinyint(1) DEFAULT 0,
+  `not_data` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notificacoes`
+--
+
+INSERT INTO `notificacoes` (`not_id`, `not_user_id`, `not_titulo`, `not_mensagem`, `not_link`, `not_lida`, `not_data`) VALUES
+(1, 3, 'Teste do Sistema', 'O sistema de notificações está funcionando!', 'admin/index.php', 1, '2025-12-01 23:14:12'),
+(2, 4, 'Relatório Inicial Reprovado', 'Seu relatório inicial foi reprovado. Por favor, faça as correções necessárias e envie novamente.', 'index.php', 1, '2025-12-01 23:41:13'),
+(3, 4, 'Relatório Inicial Reprovado', 'Seu relatório inicial foi reprovado. Por favor, faça as correções necessárias e envie novamente.', 'index.php', 1, '2025-12-01 23:41:34'),
+(4, 4, 'Relatório Inicial Reprovado', 'Seu relatório inicial foi reprovado. Por favor, faça as correções necessárias e envie novamente.', 'index.php', 1, '2025-12-01 23:42:03'),
+(5, 4, 'Relatório Final Reprovado', 'Seu relatório final foi reprovado. Por favor, faça as correções necessárias e envie novamente.', 'index.php', 1, '2025-12-01 23:49:00');
 
 -- --------------------------------------------------------
 
@@ -170,7 +198,8 @@ CREATE TABLE `relatorio_final` (
 --
 
 INSERT INTO `relatorio_final` (`rfin_id`, `rfin_sintese_empresa`, `rfin_anexo_1`, `rfin_anexo_2`, `rfin_assinatura`, `rfin_aprovado`) VALUES
-(13, 'asd', NULL, NULL, 'backend/uploads/relatorio-final/relatorio_assinado_13_1_1748571620_8328.pdf', 1);
+(13, 'asd', NULL, NULL, 'backend/uploads/relatorio-final/relatorio_assinado_13_1_1748571620_8328.pdf', 1),
+(17, 'asdasd', NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -199,7 +228,7 @@ CREATE TABLE `relatorio_inicial` (
 
 INSERT INTO `relatorio_inicial` (`rini_id`, `rini_como_ocorreu`, `rini_dev_cronograma`, `rini_preparacao_inicio`, `rini_dificul_encontradas`, `rini_aplic_conhecimento`, `rini_novas_ferramentas`, `rini_comentarios`, `rini_anexo_1`, `rini_anexo_2`, `rini_assinatura`, `rini_aprovado`) VALUES
 (20, 'Discorra sobre a forma como ocorreu a sua contratação:', 'Comente sobre o desenvolvimento de seu cronograma de estágio:', 'Discorra sobre como foi sua preparação para o início do estágio:', 'Discorra sobre as dificuldades encontradas no desenvolvimento e como foram solucionadas:', 'Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:', 'Houve contato com novas ferramentas, técnicas e/ou métodos, diferentes dos aprendidos durante o curso? Em caso positivo, cite-os e comente-os:', 'Outros comentários desejáveis:', '', '', 'backend/uploads/relatorio-inicial/relatorio_assinado_20_user_1_1748347602_5376.pdf', 1),
-(26, 'Discorra sobre a forma como ocorreu a sua contratação:oi', 'Comente sobre o desenvolvimento de seu cronograma de estágio:', 'Discorra sobre como foi sua preparação para o início do estágio:', 'Discorra sobre as dificuldades encontradas no desenvolvimento e como foram solucionadas:', 'Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com ela', 'Houve contato com novas ferramentas, técnicas e/ou métodos, diferentes dos aprendidos durante o curso? Em caso positivo, cite-os e comente-os:', 'Outros comentários desejáveis:', 'backend/uploads/relatorio-anexos\\relatorio_anexo__1_2_1762723171_9738.pdf', NULL, NULL, 0);
+(26, 'Discorra sobre a forma como ocorreu a sua contratação:oi', 'Comente sobre o desenvolvimento de seu cronograma de estágio:', 'Discorra sobre como foi sua preparação para o início do estágio:', 'Discorra sobre as dificuldades encontradas no desenvolvimento e como foram solucionadas:', 'Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com elas e as contribuições que cada disciplina propiciou:Discorra sobre as aplicações de conhecimentos desenvolvidos pelas disciplinas do curso, relacionando a atividade na qual ocorreu, as disciplinas envolvidas com ela', 'Houve contato com novas ferramentas, técnicas e/ou métodos, diferentes dos aprendidos durante o curso? Em caso positivo, cite-os e comente-os:', 'Outros comentários desejáveis:', 'backend/uploads/relatorio-anexos\\relatorio_anexo__1_2_1762723171_9738.pdf', NULL, 'backend/uploads/relatorio-inicial\\relatorio_assinado_26_4_1764643655_7283.pdf', 1);
 
 -- --------------------------------------------------------
 
@@ -225,7 +254,8 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`user_id`, `user_ra`, `user_login`, `user_senha`, `user_nome`, `user_contato`, `user_acesso`, `user_id_curs`) VALUES
 (1, 123, 'user', '$2y$10$HP9cYLqpBikz6OoTFb46Cu7F9JYirfJ8aSU7T1QMXSsv4V1ezb8Xm', 'Usuarinio da Silva', '(12) 99730-0000', 'aluno', 1),
 (3, NULL, 'admin', '$2y$10$HKX2BBMEMC0Lk99n/WTbG.Ra7VUuDNMBhUDmTqnfv1/LSYlOHlhAO', 'Adiminio da Silva', '(12) admin-admin', 'admin', NULL),
-(4, 12322222, 'user2', '$2y$10$L2a2R2k4gs4NVu8qLdDquuXUan0VKv8XVE0bMe/pCiLHn1zpHuAJC', 'Usuario dois', '222-2222', 'aluno', 2);
+(4, 12322222, 'user2', '$2y$10$L2a2R2k4gs4NVu8qLdDquuXUan0VKv8XVE0bMe/pCiLHn1zpHuAJC', 'Usuario dois', '222-2222', 'aluno', 2),
+(5, 123123, 'fatec', '$2y$10$5dk.exlTtE7TilIu6h5iJeC.cUmg992ynGwSSViMou6Vi8sfkBNUq', 'Fatecano', '(12) 997304440', 'aluno', 1);
 
 --
 -- Indexes for dumped tables
@@ -275,6 +305,13 @@ ALTER TABLE `empresas`
   ADD PRIMARY KEY (`empr_id`);
 
 --
+-- Indexes for table `notificacoes`
+--
+ALTER TABLE `notificacoes`
+  ADD PRIMARY KEY (`not_id`),
+  ADD KEY `fk_not_user` (`not_user_id`);
+
+--
 -- Indexes for table `relatorio_final`
 --
 ALTER TABLE `relatorio_final`
@@ -301,7 +338,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT for table `atv_estagio_fin`
 --
 ALTER TABLE `atv_estagio_fin`
-  MODIFY `atvf_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `atvf_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `atv_estagio_ini`
@@ -334,10 +371,16 @@ ALTER TABLE `empresas`
   MODIFY `empr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `notificacoes`
+--
+ALTER TABLE `notificacoes`
+  MODIFY `not_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `relatorio_final`
 --
 ALTER TABLE `relatorio_final`
-  MODIFY `rfin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `rfin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `relatorio_inicial`
@@ -349,7 +392,7 @@ ALTER TABLE `relatorio_inicial`
 -- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -381,6 +424,12 @@ ALTER TABLE `contratos`
   ADD CONSTRAINT `fk_cntr_rfin` FOREIGN KEY (`cntr_id_relatorio_final`) REFERENCES `relatorio_final` (`rfin_id`),
   ADD CONSTRAINT `fk_cntr_rini` FOREIGN KEY (`cntr_id_relatorio_inicial`) REFERENCES `relatorio_inicial` (`rini_id`),
   ADD CONSTRAINT `fk_cntr_user` FOREIGN KEY (`cntr_id_usuario`) REFERENCES `usuarios` (`user_id`);
+
+--
+-- Constraints for table `notificacoes`
+--
+ALTER TABLE `notificacoes`
+  ADD CONSTRAINT `fk_not_user` FOREIGN KEY (`not_user_id`) REFERENCES `usuarios` (`user_id`);
 
 --
 -- Constraints for table `usuarios`

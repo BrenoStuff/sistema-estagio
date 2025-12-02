@@ -1,7 +1,7 @@
 <?php
 include_once '../../config.php';
-// Requer o arquivo de conexão PDO
 include_once '../helpers/db-connect.php';
+include_once '../helpers/notificacoes.php';
 
 // Dados recebidos e filtragem de entrada (Segurança)
 $rini_id = filter_input(INPUT_POST, 'rini_id', FILTER_VALIDATE_INT);
@@ -23,6 +23,12 @@ try {
     
     if ($execucao) {
         // Sucesso
+        $sql = "SELECT cntr_id_usuario FROM contratos WHERE cntr_id_relatorio_inicial = ?";
+        $stmt = $conexao->prepare($sql);
+        $stmt->execute([$rini_id]);
+        $user = $stmt->fetch();
+        novaNotificacao($conexao, $user['cntr_id_usuario'], "Relatório Inicial Reprovado", "Seu relatório inicial foi reprovado. Por favor, faça as correções necessárias e envie novamente.", "index.php");
+
         header("location: " . BASE_URL . "admin");
         exit();
     } else {
@@ -32,6 +38,8 @@ try {
     }
 
 } catch (PDOException $e) {
+    echo "Erro: " . $e->getMessage();
+    die();
     // Tratamento de erro seguro: registra o erro (log) e mostra mensagem genérica
     error_log("Erro PDO ao reprovar relatório inicial: " . $e->getMessage());
     $aviso = "Erro interno ao reprovar relatório inicial. Tente novamente mais tarde.";

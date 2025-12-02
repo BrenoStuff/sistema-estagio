@@ -84,7 +84,7 @@ function h($str) { return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8'); }
                         <tbody>
                             <?php foreach ($alunos as $row) { ?>
                             <tr class="linha-tabela">
-                                <td><span class="badge bg-light text-dark border"><?php echo h($row['user_ra']); ?></span></td>
+                                <td><span class="badge bg-body-tertiary text-dark border"><?php echo h($row['user_ra']); ?></span></td>
                                 <td class="fw-bold text-primary"><?php echo h($row['user_nome']); ?></td>
                                 <td><?php echo h($row['curs_nome']); ?></td>
                                 <td class="small"><i class="fas fa-phone-alt text-muted me-1"></i><?php echo h($row['user_contato']); ?></td>

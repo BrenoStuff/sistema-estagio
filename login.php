@@ -17,7 +17,7 @@ $title = SIS_NAME . " - Entrar";
 </style>
 
 
-<body class="d-flex flex-column min-vh-100 bg-light">
+<body class="d-flex flex-column min-vh-100 bg-body-tertiary">
   <main class="container flex-grow-1 d-flex align-items-center justify-content-center">
     <div class="login-card-wrapper">
       <div class="card shadow-lg border-0 rounded-3">
