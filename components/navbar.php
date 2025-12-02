@@ -37,18 +37,13 @@ $user_acesso = $_SESSION['acesso'] ?? 'aluno';
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <?php if ($user_acesso == 'admin'): ?>
                     <!-- Link Admin -->
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo ($navActive == 'home' ? 'active' : ''); ?>" href="<?php echo BASE_URL; ?>admin/index.php">
-                            <i class="fas fa-fw fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link <?php echo ($navActive == 'home' ? 'active' : ''); ?>" href="<?php echo BASE_URL; ?>admin/index.php">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link <?php echo ($navActive == 'contratos' ? 'active' : ''); ?>" href="<?php echo BASE_URL; ?>admin/contratos.php">Contratos</a></li>
+                    <li class="nav-item"><a class="nav-link <?php echo ($navActive == 'empresas' ? 'active' : ''); ?>" href="<?php echo BASE_URL; ?>admin/empresas.php">Empresas</a></li>
+                    <li class="nav-item"><a class="nav-link <?php echo ($navActive == 'alunos' ? 'active' : ''); ?>" href="<?php echo BASE_URL; ?>admin/alunos.php">Alunos</a></li>
                 <?php else: ?>
                     <!-- Link Aluno -->
-                     <li class="nav-item">
-                        <a class="nav-link <?php echo ($navActive == 'home' ? 'active' : ''); ?>" href="<?php echo BASE_URL; ?>index.php">
-                            <i class="fas fa-fw fa-home"></i> Home
-                        </a>
-                    </li>
+                     <li class="nav-item"><a class="nav-link <?php echo ($navActive == 'home' ? 'active' : ''); ?>" href="<?php echo BASE_URL; ?>index.php"></i> Home</a></li>
                 <?php endif; ?>
             </ul>
 

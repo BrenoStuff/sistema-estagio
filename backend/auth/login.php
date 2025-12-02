@@ -3,7 +3,7 @@ require_once '../../config.php';
 require_once '../helpers/db-connect.php';
 
 // Limpeza básica dos dados de entrada
-$login = filter_input(INPUT_POST, 'login', FILTER_SANITIZE_SPECIAL_CHARS);
+$login = filter_input(INPUT_POST, 'login', FILTER_DEFAULT);
 $senha = $_POST['senha']; // Senha bruta para verificação
 
 $sql = "SELECT user_id, user_acesso, user_senha FROM usuarios WHERE user_login = ?";

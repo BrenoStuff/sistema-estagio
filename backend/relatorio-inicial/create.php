@@ -10,14 +10,14 @@ include_once '../helpers/save-file.php';
 // ------------------------------------------------------------------
 
 $cntr_id = filter_input(INPUT_POST, 'cntr_id', FILTER_VALIDATE_INT);
-$rini_como_ocorreu = filter_input(INPUT_POST, 'rini_como_ocorreu', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_dev_cronograma = filter_input(INPUT_POST, 'rini_dev_cronograma', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_preparacao_inicio = filter_input(INPUT_POST, 'rini_preparacao_inicio', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_dificul_encontradas = filter_input(INPUT_POST, 'rini_dificul_encontradas', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_aplic_conhecimento = filter_input(INPUT_POST, 'rini_aplic_conhecimento', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_novas_ferramentas = filter_input(INPUT_POST, 'rini_novas_ferramentas', FILTER_SANITIZE_SPECIAL_CHARS);
+$rini_como_ocorreu = filter_input(INPUT_POST, 'rini_como_ocorreu', FILTER_DEFAULT);
+$rini_dev_cronograma = filter_input(INPUT_POST, 'rini_dev_cronograma', FILTER_DEFAULT);
+$rini_preparacao_inicio = filter_input(INPUT_POST, 'rini_preparacao_inicio', FILTER_DEFAULT);
+$rini_dificul_encontradas = filter_input(INPUT_POST, 'rini_dificul_encontradas', FILTER_DEFAULT);
+$rini_aplic_conhecimento = filter_input(INPUT_POST, 'rini_aplic_conhecimento', FILTER_DEFAULT);
+$rini_novas_ferramentas = filter_input(INPUT_POST, 'rini_novas_ferramentas', FILTER_DEFAULT);
 
-$rini_comentarios = filter_input(INPUT_POST, 'rini_comentarios', FILTER_SANITIZE_SPECIAL_CHARS);
+$rini_comentarios = filter_input(INPUT_POST, 'rini_comentarios', FILTER_DEFAULT);
 if (empty($rini_comentarios) || trim($rini_comentarios) === '') {
     $rini_comentarios = null;
 }
@@ -64,8 +64,8 @@ $atividades = array();
 $comentariosAtv = array();
 
 for ($i = 1; $i <= 10; $i++) {
-    $atividade = filter_input(INPUT_POST, 'atividade' . $i, FILTER_SANITIZE_SPECIAL_CHARS);
-    $comentario = filter_input(INPUT_POST, 'comentario' . $i, FILTER_SANITIZE_SPECIAL_CHARS);
+    $atividade = filter_input(INPUT_POST, 'atividade' . $i, FILTER_DEFAULT);
+    $comentario = filter_input(INPUT_POST, 'comentario' . $i, FILTER_DEFAULT);
 
     if (!empty($atividade)) {
         $atividades[] = $atividade;

@@ -8,10 +8,10 @@ if ($_SESSION['acesso'] !== 'admin') {
 }
 
 $id = filter_input(INPUT_POST, 'cntr_id', FILTER_SANITIZE_NUMBER_INT);
-$data_inicio = filter_input(INPUT_POST, 'cntr_data_inicio', FILTER_SANITIZE_SPECIAL_CHARS);
-$data_fim = filter_input(INPUT_POST, 'cntr_data_fim', FILTER_SANITIZE_SPECIAL_CHARS);
-$hora_inicio = filter_input(INPUT_POST, 'cntr_hora_inicio', FILTER_SANITIZE_SPECIAL_CHARS);
-$hora_fim = filter_input(INPUT_POST, 'cntr_hora_final', FILTER_SANITIZE_SPECIAL_CHARS);
+$data_inicio = filter_input(INPUT_POST, 'cntr_data_inicio', FILTER_DEFAULT);
+$data_fim = filter_input(INPUT_POST, 'cntr_data_fim', FILTER_DEFAULT);
+$hora_inicio = filter_input(INPUT_POST, 'cntr_hora_inicio', FILTER_DEFAULT);
+$hora_fim = filter_input(INPUT_POST, 'cntr_hora_final', FILTER_DEFAULT);
 $ativo = filter_input(INPUT_POST, 'cntr_ativo', FILTER_SANITIZE_NUMBER_INT);
 $tipo = filter_input(INPUT_POST, 'cntr_tipo_estagio', FILTER_SANITIZE_NUMBER_INT);
 

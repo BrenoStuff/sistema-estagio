@@ -5,7 +5,7 @@ require_once '../helpers/db-connect.php';
 // -----------------------------------------------
 //  Coleta e Limpeza dos dados de entrada
 // -----------------------------------------------
-$curs_nome = filter_input(INPUT_POST, 'curs_nome', FILTER_SANITIZE_SPECIAL_CHARS);
+$curs_nome = filter_input(INPUT_POST, 'curs_nome', FILTER_DEFAULT);
 
 // -----------------------------------------------
 //  Inserção no Banco de Dados

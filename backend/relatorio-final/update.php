@@ -9,7 +9,7 @@ include_once '../helpers/save-file.php';
 // ------------------------------------------------------------------
 $rfin_id = filter_input(INPUT_POST, 'rfin_id_edit', FILTER_VALIDATE_INT);
 $cntr_id = filter_input(INPUT_POST, 'cntr_id_edit', FILTER_VALIDATE_INT);
-$rfin_sintese_empresa = filter_input(INPUT_POST, 'rfin_sintese_empresa_edit', FILTER_SANITIZE_SPECIAL_CHARS);
+$rfin_sintese_empresa = filter_input(INPUT_POST, 'rfin_sintese_empresa_edit', FILTER_DEFAULT);
 
 // ------------------------------------------------------------------
 // 2. Lógica de Anexos (File Upload)
@@ -53,11 +53,11 @@ $atividades = array();
 $resumos = array();
 $disciplinas = array();
 for ($i = 1; $i <= 10; $i++) {
-    $atividade = filter_input(INPUT_POST, 'atividade' . $i . '_final_edit', FILTER_SANITIZE_SPECIAL_CHARS);
+    $atividade = filter_input(INPUT_POST, 'atividade' . $i . '_final_edit', FILTER_DEFAULT);
     if (!empty($atividade) && trim($atividade) !== '') {
         $atividades[] = $atividade;
-        $resumos[] = filter_input(INPUT_POST, 'resumo' . $i . '_final_edit', FILTER_SANITIZE_SPECIAL_CHARS);
-        $disciplinas[] = filter_input(INPUT_POST, 'disciplina' . $i . '_final_edit', FILTER_SANITIZE_SPECIAL_CHARS);
+        $resumos[] = filter_input(INPUT_POST, 'resumo' . $i . '_final_edit', FILTER_DEFAULT);
+        $disciplinas[] = filter_input(INPUT_POST, 'disciplina' . $i . '_final_edit', FILTER_DEFAULT);
     }
 }
 

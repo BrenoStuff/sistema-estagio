@@ -10,10 +10,10 @@ require_once '../helpers/save-file.php';
 // Limpeza e filtragem dos dados de entrada
 $cntr_id_usuario = filter_input(INPUT_POST, 'cntr_id_usuario', FILTER_VALIDATE_INT);
 $cntr_id_empresa = filter_input(INPUT_POST, 'cntr_id_empresa', FILTER_VALIDATE_INT);
-$cntr_data_inicio = filter_input(INPUT_POST, 'cntr_data_inicio', FILTER_SANITIZE_SPECIAL_CHARS);
-$cntr_data_fim = filter_input(INPUT_POST, 'cntr_data_fim', FILTER_SANITIZE_SPECIAL_CHARS);
-$cntr_hora_inicio = filter_input(INPUT_POST, 'cntr_hora_inicio', FILTER_SANITIZE_SPECIAL_CHARS);
-$cntr_hora_final = filter_input(INPUT_POST, 'cntr_hora_final', FILTER_SANITIZE_SPECIAL_CHARS);
+$cntr_data_inicio = filter_input(INPUT_POST, 'cntr_data_inicio', FILTER_DEFAULT);
+$cntr_data_fim = filter_input(INPUT_POST, 'cntr_data_fim', FILTER_DEFAULT);
+$cntr_hora_inicio = filter_input(INPUT_POST, 'cntr_hora_inicio', FILTER_DEFAULT);
+$cntr_hora_final = filter_input(INPUT_POST, 'cntr_hora_final', FILTER_DEFAULT);
 // Os campos booleanos são definidos com base na existência no $_POST
 $cntr_tipo_estagio = isset($_POST['cntr_tipo_estagio']) ? 1 : 0; 
 $cntr_ativo = isset($_POST['cntr_ativo']) ? 1 : 0;

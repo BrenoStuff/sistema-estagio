@@ -10,14 +10,14 @@ include_once '../helpers/save-file.php';
 $rini_id = filter_input(INPUT_POST, 'rini_id_edit', FILTER_VALIDATE_INT);
 $cntr_id = filter_input(INPUT_POST, 'cntr_id_edit', FILTER_VALIDATE_INT); // Não usado na query, mas mantido
 
-$rini_como_ocorreu = filter_input(INPUT_POST, 'rini_como_ocorreu_edit', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_dev_cronograma = filter_input(INPUT_POST, 'rini_dev_cronograma_edit', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_preparacao_inicio = filter_input(INPUT_POST, 'rini_preparacao_inicio_edit', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_dificul_encontradas = filter_input(INPUT_POST, 'rini_dificul_encontradas_edit', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_aplic_conhecimento = filter_input(INPUT_POST, 'rini_aplic_conhecimento_edit', FILTER_SANITIZE_SPECIAL_CHARS);
-$rini_novas_ferramentas = filter_input(INPUT_POST, 'rini_novas_ferramentas_edit', FILTER_SANITIZE_SPECIAL_CHARS);
+$rini_como_ocorreu = filter_input(INPUT_POST, 'rini_como_ocorreu_edit', FILTER_DEFAULT);
+$rini_dev_cronograma = filter_input(INPUT_POST, 'rini_dev_cronograma_edit', FILTER_DEFAULT);
+$rini_preparacao_inicio = filter_input(INPUT_POST, 'rini_preparacao_inicio_edit', FILTER_DEFAULT);
+$rini_dificul_encontradas = filter_input(INPUT_POST, 'rini_dificul_encontradas_edit', FILTER_DEFAULT);
+$rini_aplic_conhecimento = filter_input(INPUT_POST, 'rini_aplic_conhecimento_edit', FILTER_DEFAULT);
+$rini_novas_ferramentas = filter_input(INPUT_POST, 'rini_novas_ferramentas_edit', FILTER_DEFAULT);
 
-$rini_comentarios = filter_input(INPUT_POST, 'rini_comentarios_edit', FILTER_SANITIZE_SPECIAL_CHARS);
+$rini_comentarios = filter_input(INPUT_POST, 'rini_comentarios_edit', FILTER_DEFAULT);
 if (empty($rini_comentarios) || trim($rini_comentarios) === '') {
     $rini_comentarios = null;
 }
@@ -61,10 +61,10 @@ $atividades = array();
 $comentariosAtv = array();
 
 for ($i = 1; $i <= 10; $i++) {
-    $atividade = filter_input(INPUT_POST, 'atividade' . $i . '_edit', FILTER_SANITIZE_SPECIAL_CHARS);
+    $atividade = filter_input(INPUT_POST, 'atividade' . $i . '_edit', FILTER_DEFAULT);
     if (!empty($atividade) && trim($atividade) !== '') {
         $atividades[] = $atividade;
-        $comentario = filter_input(INPUT_POST, 'comentario' . $i . '_edit', FILTER_SANITIZE_SPECIAL_CHARS);
+        $comentario = filter_input(INPUT_POST, 'comentario' . $i . '_edit', FILTER_DEFAULT);
         $comentariosAtv[] = (empty($comentario) || trim($comentario) === '') ? null : $comentario;
     }
 }

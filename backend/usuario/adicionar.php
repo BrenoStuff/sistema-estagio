@@ -5,12 +5,12 @@ include_once '../helpers/db-connect.php';
 // ------------------------------------------------------------------
 // Limpeza e filtragem dos dados de entrada
 // ------------------------------------------------------------------
-$user_nome = filter_input(INPUT_POST, 'user_nome', FILTER_SANITIZE_SPECIAL_CHARS);
-$user_login = filter_input(INPUT_POST, 'user_login', FILTER_SANITIZE_SPECIAL_CHARS);
+$user_nome = filter_input(INPUT_POST, 'user_nome', FILTER_DEFAULT);
+$user_login = filter_input(INPUT_POST, 'user_login', FILTER_DEFAULT);
 $user_senha_raw = $_POST['user_senha']; // Senha bruta
 $user_curso = filter_input(INPUT_POST, 'user_id_curs', FILTER_VALIDATE_INT);
-$user_ra = filter_input(INPUT_POST, 'user_ra', FILTER_SANITIZE_SPECIAL_CHARS);
-$user_contato = filter_input(INPUT_POST, 'user_contato', FILTER_SANITIZE_SPECIAL_CHARS);
+$user_ra = filter_input(INPUT_POST, 'user_ra', FILTER_DEFAULT);
+$user_contato = filter_input(INPUT_POST, 'user_contato', FILTER_DEFAULT);
 $user_tipo = "aluno"; // Tipo padrão para novos usuários
 
 // ------------------------------------------------------------------

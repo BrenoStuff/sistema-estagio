@@ -10,7 +10,7 @@ include_once '../helpers/save-file.php';
 // ------------------------------------------------------------------
 
 $cntr_id = filter_input(INPUT_POST, 'cntr_id', FILTER_VALIDATE_INT);
-$rfin_sintese_empresa = filter_input(INPUT_POST, 'rfin_sintese_empresa', FILTER_SANITIZE_SPECIAL_CHARS);
+$rfin_sintese_empresa = filter_input(INPUT_POST, 'rfin_sintese_empresa', FILTER_DEFAULT);
 
 // Validação básica
 if (!$cntr_id || !$rfin_sintese_empresa) {
@@ -77,9 +77,9 @@ for ($i = 1; $i <= 10; $i++) {
         $disciplina_key = 'disciplina' . $i . '_final';
 
         // Filtra e armazena os dados
-        $atividades[] = filter_input(INPUT_POST, $atividade_key, FILTER_SANITIZE_SPECIAL_CHARS);
-        $resumos[] = filter_input(INPUT_POST, $resumo_key, FILTER_SANITIZE_SPECIAL_CHARS);
-        $disciplina[] = filter_input(INPUT_POST, $disciplina_key, FILTER_SANITIZE_SPECIAL_CHARS);
+        $atividades[] = filter_input(INPUT_POST, $atividade_key, FILTER_DEFAULT);
+        $resumos[] = filter_input(INPUT_POST, $resumo_key, FILTER_DEFAULT);
+        $disciplina[] = filter_input(INPUT_POST, $disciplina_key, FILTER_DEFAULT);
     }
 }
 

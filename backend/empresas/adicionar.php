@@ -6,13 +6,13 @@ require_once '../helpers/db-connect.php';
 //  Coleta e Limpeza dos dados de entrada
 // -----------------------------------------------
 
-$empr_nome = filter_input(INPUT_POST, 'empr_nome', FILTER_SANITIZE_SPECIAL_CHARS);
-$empr_cnpj = filter_input(INPUT_POST, 'empr_cnpj', FILTER_SANITIZE_SPECIAL_CHARS);
-$empr_tipo = filter_input(INPUT_POST, 'empr_tipo', FILTER_SANITIZE_SPECIAL_CHARS);
-$empr_contato_1 = filter_input(INPUT_POST, 'empr_contato_1', FILTER_SANITIZE_SPECIAL_CHARS);
-$empr_contato_2 = filter_input(INPUT_POST, 'empr_contato_2', FILTER_SANITIZE_SPECIAL_CHARS);
-$empr_cidade = filter_input(INPUT_POST, 'empr_cidade', FILTER_SANITIZE_SPECIAL_CHARS);
-$empr_endereco = filter_input(INPUT_POST, 'empr_endereco', FILTER_SANITIZE_SPECIAL_CHARS);
+$empr_nome = filter_input(INPUT_POST, 'empr_nome', FILTER_DEFAULT);
+$empr_cnpj = filter_input(INPUT_POST, 'empr_cnpj', FILTER_DEFAULT);
+$empr_tipo = filter_input(INPUT_POST, 'empr_tipo', FILTER_DEFAULT);
+$empr_contato_1 = filter_input(INPUT_POST, 'empr_contato_1', FILTER_DEFAULT);
+$empr_contato_2 = filter_input(INPUT_POST, 'empr_contato_2', FILTER_DEFAULT);
+$empr_cidade = filter_input(INPUT_POST, 'empr_cidade', FILTER_DEFAULT);
+$empr_endereco = filter_input(INPUT_POST, 'empr_endereco', FILTER_DEFAULT);
 
 // Define como NULL se o campo opcional estiver vazio
 if (empty($empr_contato_2)) {
@@ -42,7 +42,7 @@ try {
     
     if ($execucao) {
         // Sucesso
-        header("location: " . BASE_URL . "admin");
+        header("location: " . BASE_URL . "admin/empresas.php");
         exit();
     } else {
         // Falha na execução que não lançou exceção (Fallback)
