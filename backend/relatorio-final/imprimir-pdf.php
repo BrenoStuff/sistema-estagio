@@ -293,8 +293,8 @@ require_once '../../components/head.php';
         <header class="report-header">
             <div class="logo-container">
                 <!-- Usando placeholders para os logos como no PDF -->
-                <img src="https://placehold.co/200x60/FFF/000?text=Logo+Centro+Paula+Souza" alt="Logo Paula Souza">
-                <img src="https://placehold.co/200x60/FFF/000?text=Logo+Governo+SP" alt="Logo Gov SP">
+                <img src="<?php echo BASE_URL; ?>img/logo_fatec.png" alt="Logo Fatec" height="60">
+                <img src="<?php echo BASE_URL; ?>img/logo_cps.png" alt="Logo CPS e Governo de SP" height="60">
             </div>
             <h2 class="text-center mt-2 fw-bold">Fatec São Sebastião</h2>
             <!-- **** ALTERAÇÃO: Título **** -->
