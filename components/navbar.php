@@ -40,6 +40,8 @@ if (isset($_SESSION['usuario']) && isset($conexao)) {
                         <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>admin/contratos.php">Contratos</a></li>
                         <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>admin/empresas.php">Empresas</a></li>
                         <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>admin/alunos.php">Alunos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>admin/cursos.php">Cursos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>admin/relatorios.php">Relatórios</a></li>
                     <?php } else { ?>
                         <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>index.php">Meus Estágios</a></li>
                     <?php } ?>
@@ -55,7 +57,7 @@ if (isset($_SESSION['usuario']) && isset($conexao)) {
                         </button>
                     </li>
 
-                    <li class="nav-item dropdown me-3">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle position-relative" href="#" id="notifDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bell fa-lg"></i>
                             <?php if ($qtd_nao_lidas > 0) { ?>
@@ -95,9 +97,6 @@ if (isset($_SESSION['usuario']) && isset($conexao)) {
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <span class="d-none d-lg-inline text-white-600 small me-2">
-                                <?php echo isset($_SESSION['nome_usuario']) ? $_SESSION['nome_usuario'] : 'Usuário'; ?>
-                            </span>
                             <i class="fas fa-user-circle fa-lg"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
